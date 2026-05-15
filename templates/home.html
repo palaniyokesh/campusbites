@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBites | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/home.css">
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+        <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" class="transition-logo">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="" width="200px" class="logo">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="active">Home</a>
+            <a href="/menu">Menu</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href="/my-orders" class="orders-btn">My Orders</a>
+
+            <div class="user-account-container" id="userAccountSection" style="display: none;">
+                <div class="user-profile-trigger" onclick="toggleUserDropdown()">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span id="navUserName">Loading...</span>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <p class="user-id-label">User ID</p>
+                        <p id="navUserEmail" class="user-email-text">email@campus.com</p>
+                    </div>
+                    <hr>
+                    <button class="logout-btn" onclick="logoutUser()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <a href="/login-page" id="navLoginBtn">Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Why Pay More When You Can <span>Eat Better</span></h1>
+            <p>Order your favorite meals with us and skip long queues and unnecessary delays. Our smart <b>pre-order
+                    system</b> helps you save time and enjoy fresh food.</p>
+
+            <button class="btn-menu">View Today's Menu</button>
+            <div class="scrolling-container">
+                <h3 id="dayTitle">Today's Picks</h3>
+                <div class="scroll-wrapper">
+                    <div class="scroll-track" id="scrollTrack"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img src="/static/images/pexels-ahsen-53440929-7763035.jpg" alt="Cafeteria Crowds">
+        </div>
+    </section>
+
+    <script>
+        const dailyMenu = {
+            Monday: [
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/sambar.png", name: "Sambar Meals" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh Juice" },
+                { img: "/static/images/chappathi.png", name: "Chappathi" }
+            ],
+            Tuesday: [
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/morkulambu.png", name: "Mor Kulambu" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh Juice" }
+            ],
+            Wednesday: [
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/pongal.png", name: "Pongal" },
+                { img: "/static/images/puli kulambu.png", name: "Puli Kulambu" },
+                { img: "/static/images/chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/chappathi.png", name: "Chappathi" },
+                { img: "/static/images/vegFried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/juice.jpg", name: "Fresh Juice" }
+            ],
+            Thursday: [
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/vegBiryani.jpg", name: "Veg Biriyani" },
+                { img: "/static/images/chicken 65.png", name: "Chicken 65" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh juices" }
+            ],
+            Friday: [
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/sambar.png", name: "Sambar Meals" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh juices" }
+            ],
+            Saturday: [
+                { img: "/static/images/porrota.png", name: "Parotta" },
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/sambar.png", name: "Sambar Meals" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh juices" }
+            ],
+            Sunday: [
+                { img: "/static/images/porrota.jpg", name: "Parotta" },
+                { img: "/static/images/dosai.png", name: "Dosai" },
+                { img: "/static/images/idli.png", name: "Idli" },
+                { img: "/static/images/vadai.png", name: "Vadai" },
+                { img: "/static/images/poori.png", name: "Poori" },
+                { img: "/static/images/sambar.png", name: "Sambar Meals" },
+                { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice" },
+                { img: "/static/images/vegfried.png", name: "Veg Fried Rice" },
+                { img: "/static/images/chicbiri.png", name: "Chicken Biryani" },
+                { img: "/static/images/juice.jpg", name: "Fresh juices" }
+            ]
+        };
+
+        const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+        const track = document.getElementById("scrollTrack");
+        const dayTitle = document.getElementById("dayTitle");
+
+        dayTitle.innerText = `${today}'s Menu`;
+
+        function createFoodCard(dish) {
+            // Now it uses dish.img for the source and dish.name for the text
+            return `
+        <div class="food-card">
+            <img src="${dish.img}" alt="${dish.name}">
+            <p>${dish.name}</p> 
+        </div>`;
+        }
+
+        if (dailyMenu[today]) {
+            const menuItems = dailyMenu[today];
+            // Duplicate the array for a seamless loop, then create cards
+            const fullTrackContent = [...menuItems, ...menuItems]
+                .map(dish => createFoodCard(dish))
+                .join('');
+
+            track.innerHTML = fullTrackContent;
+        }
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const icon = document.querySelector('.hamburger i');
+
+            // Toggles the bounce animation
+            navLinks.classList.toggle('mobile-open');
+
+            // Optional: Switches the bars icon to an 'X' icon
+            if (navLinks.classList.contains('mobile-open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('transitionOverlay');
+            // Fade out the overlay once page is ready
+            overlay.classList.add('loaded');
+        });
+
+        // Intercept all links for a smooth exit animation
+        // Intercept all links and buttons for a smooth exit animation
+        document.querySelectorAll('a, .btn-menu').forEach(link => {
+            link.addEventListener('click', function (e) {
+                // 1. Determine destination: 
+                // If it's a button, we check for a custom link or default to menu.html
+                // If it's an <a> tag, we use the href.
+                let destination = this.href;
+
+                if (this.classList.contains('btn-menu')) {
+                    destination = '/menu';
+                }
+
+                // 2. Only animate if there's a destination and it's not a dummy link (#)
+                if (destination && !destination.includes('#')) {
+                    e.preventDefault(); // Stop the instant jump
+
+                    const overlay = document.getElementById('transitionOverlay');
+
+                    // Play exit animation
+                    overlay.classList.remove('loaded');
+                    overlay.classList.add('exit');
+
+                    // Wait for animation (500ms) then redirect
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500);
+                }
+            });
+        });
+        window.addEventListener('load', async () => {
+            const response = await fetch('/get-my-orders');
+            const orders = await response.json();
+
+            const historyContainer = document.getElementById('orderHistory');
+
+            if (orders.length === 0) {
+                historyContainer.innerHTML = "<p>No orders yet!</p>";
+                return;
+            }
+        });
+        // --- Account Management Logic ---
+
+        // 1. Check Session & Update Nav
+        async function checkUserSession() {
+            try {
+                // We use credentials: 'include' to pass the session cookie
+                const response = await fetch('/get-session', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.logged_in) {
+                    document.getElementById('userAccountSection').style.display = 'inline-block';
+                    document.getElementById('navLoginBtn').style.display = 'none';
+                    document.getElementById('navUserName').innerText = data.user_name;
+                    document.getElementById('navUserEmail').innerText = data.user_email;
+                } else {
+                    document.getElementById('userAccountSection').style.display = 'none';
+                    document.getElementById('navLoginBtn').style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Session Error:", error);
+            }
+        }
+
+        // 2. Toggle Dropdown visibility
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // 3. Logout User
+        async function logoutUser() {
+            try {
+                await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = "/login-page";
+            } catch (err) {
+                alert("Logout failed!");
+            }
+        }
+
+        // Close dropdown if clicking outside
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-account-container')) {
+                document.getElementById('userDropdown').classList.remove('show');
+            }
+        });
+
+        // INITIALIZE: Call this inside your existing window 'load' listener
+        window.addEventListener('load', () => {
+            checkUserSession(); // Added this
+            // ... your existing overlay code ...
+        });
+    </script>
+
+</body>
+
+</html>

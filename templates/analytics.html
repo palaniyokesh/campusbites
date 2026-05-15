@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Bites | Admin Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/analytics.css">
+</head>
+<body>
+
+    <div class="page-transition-overlay" id="transitionOverlay">
+       <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+    <a href="/admin-dashboard">Dashboard</a>
+    <a href="#" class="active">Analytics</a>
+    <a href="/admin-reviews-page">Customer Reviews</a> 
+    <a href="/admin-login" class="logout-btn" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+    </nav>
+
+    <section class="admin-section">
+        <div class="admin-header">
+            <h1>Daily <span>Analytics</span></h1>
+            <p id="displayDay">Loading present day...</p>
+        </div>
+
+       <div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-fire" style="color: var(--accent-gold); margin-bottom: 10px;"></i>
+        <h3>Most Sold Item</h3>
+        <p id="mostSold" style="color: var(--accent-gold);">-</p>
+    </div>
+
+    <div class="stat-card">
+        <i class="fas fa-indian-rupee-sign" style="color: var(--success); margin-bottom: 10px;"></i>
+        <h3>Total Revenue</h3>
+        <p id="totalRevenue" style="color: var(--success);">₹0</p>
+    </div>
+
+    <div class="stat-card">
+        <i class="fas fa-clipboard-list" style="color: var(--primary-teal); margin-bottom: 10px;"></i>
+        <h3>Orders Today</h3>
+        <p id="orderCount">0</p>
+    </div>
+</div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 20px;" class="mobile-stack">
+            <div class="table-container">
+                <div style="padding: 20px; border-bottom: 1px solid rgba(13, 110, 110, 0.1);">
+                    <h2 style="color: var(--primary-teal); font-size: 1.2rem;">Item Sales Breakdown</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Food Item</th>
+                            <th>Quantity Sold</th>
+                            <th>Popularity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="table-container" style="padding: 25px;">
+                <h2 style="color: var(--primary-teal); font-size: 1.2rem; margin-bottom: 20px;">Unsold Today</h2>
+                <div id="unsoldContainer" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 1. Loader Logic
+        window.addEventListener('load', () => {
+            document.getElementById('transitionOverlay').classList.add('loaded');
+            fetchAnalytics(); // Load data on start
+        });
+
+
+// 2. HANDLE PAGE EXIT (Fade In on link click)
+document.querySelectorAll('.nav-links a:not(.logout-btn)').forEach(link => {
+    link.addEventListener('click', function (e) {
+        let destination = this.href;
+
+        if (destination && !destination.includes('#')) {
+            e.preventDefault();
+            const overlay = document.getElementById('transitionOverlay');
+            
+            overlay.classList.remove('loaded');
+            overlay.classList.add('exit');
+
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 500);
+        }
+    });
+});
+
+// 3. UPDATED LOGOUT WITH ANIMATION
+function adminLogout() {
+    const overlay = document.getElementById('transitionOverlay');
+    
+    // Play exit animation first
+    overlay.classList.remove('loaded');
+    overlay.classList.add('exit');
+
+    localStorage.removeItem('adminLoggedIn');
+    
+    // Redirect after animation
+    setTimeout(() => { 
+        window.location.href = "/admin-login"; 
+    }, 500);
+}
+        // 2. Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.getElementById('navLinks');
+            nav.classList.toggle('mobile-open');
+        }
+
+        // 3. Analytics Fetch Logic (Connects to your Flask route)
+        async function fetchAnalytics() {
+            try {
+                const response = await fetch('/admin/daily-analytics');
+                const data = await response.json();
+
+                // Update Header & Summary
+                document.getElementById('displayDay').innerText = `${data.day}, ${data.date}`;
+                document.getElementById('mostSold').innerText = data.most_sold;
+                document.getElementById('totalRevenue').innerText = `₹${data.total_revenue}`;
+                document.getElementById('orderCount').innerText = data.total_items_sold;
+
+                // Update Table
+                const tbody = document.getElementById('salesBody');
+                tbody.innerHTML = "";
+                Object.entries(data.item_counts).forEach(([name, qty]) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${name}</td>
+                            <td><strong>${qty}</strong></td>
+                            <td><span class="status-pill status-ready">Selling</span></td>
+                        </tr>`;
+                });
+
+                // Update Unsold Tags
+                const unsoldDiv = document.getElementById('unsoldContainer');
+                unsoldDiv.innerHTML = "";
+                data.unsold_items.forEach(item => {
+                    unsoldDiv.innerHTML += `<span class="status-pill status-pending">${item}</span>`;
+                });
+
+            } catch (err) {
+                console.error("Failed to fetch data", err);
+            }
+        }
+
+        
+
+        // Auto-refresh every 60 seconds
+        setInterval(fetchAnalytics, 60000);
+    </script>
+</body>
+</html>

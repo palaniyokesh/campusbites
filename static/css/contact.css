@@ -1,0 +1,784 @@
+:root {
+    --primary-teal: #0d4d4d;
+    --accent-gold: #ca9126;
+    --bg-cream: #f8edd3;
+    --card-white: #fbf3df;
+    --text-muted: #555;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif;
+  overscroll-behavior-x: none;}
+body {
+    background-color: var(--bg-cream);
+    background-attachment: fixed;
+}
+.contact-section {
+    padding: 40px 20px; /* Reduced from 10% to 20px */
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.contact-header span{
+    color: var(--accent-gold);
+}
+
+.contact-header h1 {
+    font-size: 40px;
+    color:#0d6e6e;
+    margin-bottom: 10px;
+}
+
+.contact-header p {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* --- GRID & CARDS --- */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Lowered min-width */
+    gap: 20px; /* Tighter gap */
+    margin-bottom: 60px;
+    width: 100%; /* Forces it to use all available space */
+}
+
+.contact-card {
+    background: var(--card-white);
+    padding: 40px 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(13, 110, 110, 0.1);
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(13, 110, 110, 0.15);
+}
+
+.contact-card .icon {
+    font-size: 45px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.contact-card h3 {
+    color: var(--primary-teal);
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.contact-card p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* --- MAP CONTAINER --- */
+.map-container {
+    background: var(--card-white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    margin-bottom: 60px;
+}
+
+.map-frame {
+    filter: contrast(1.05) saturate(1.1); /* Keeps satellite colors vivid */
+}
+
+.map-info {
+    padding: 25px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-white); /* Changed from white to match the theme */
+    border-top: 1px solid rgba(13, 110, 110, 0.1); /* Subtle separator */
+}
+.pickup-details h4 {
+    color: var(--primary-teal);
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.pickup-details p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* --- NAVIGATE TO COUNTER BUTTON (MAP SECTION) --- */
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #0d6e6e; /* #0d4d4d */
+    color: white !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 12px 28px;
+    border-radius: 50px; /* Pill shape to match Get Directions */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(13, 110, 110, 0.2);
+    border: none;
+    cursor: pointer;
+}
+
+.nav-btn:hover {
+    background: var(--accent-gold); /* Turns gold on hover */
+   transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(18, 140, 126, 0.4);
+    letter-spacing: 0.5px;
+}
+
+/* Optional: Make the icon or text inside move slightly on hover */
+.nav-btn:hover span {
+    transform: translateX(3px);
+}
+/* Add a subtle shine animation */
+.nav-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.nav-btn:hover::after {
+    left: 100%;
+}
+.nav-btn span {
+    transition: transform 0.3s ease;
+}
+
+.pulse-icon {
+    width: 12px;
+    height: 12px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 12px;
+    box-shadow: 0 0 0 rgba(202, 145, 38, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(202, 145, 38, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(202, 145, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(202, 145, 38, 0); }
+}
+
+
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media screen and (max-width: 768px) {
+    .contact-section { padding: 40px 20px; }
+    .map-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 30px 20px;
+    }
+    .form-row { flex-direction: column; }
+}
+nav {
+    background-color: #fbf3df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px; /* Standardized Desktop Padding */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.21);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0d6e6e;
+    margin-left: 35px; /* Standardized spacing */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0; /* Start at 0 width */
+  height: 1.6px; /* Thickness of the line */
+  background-color: #0d6e6e;
+  transition: width 0.3s ease; /* This creates the "sliding" animation */
+}
+.nav-links a:hover::after {
+  width: 50%; /* Expands to exactly half the width */
+}
+
+/* Unified Active Underline */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px; 
+    left: 0;
+    width: 100%; 
+    height: 1.6px; 
+    background: #0d6e6e;
+    border-radius: 2px;
+}
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+/* Styling the WhatsApp SVG */
+.whatsapp-icon {
+    fill: #25D366; /* The official WhatsApp Green */
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Hover effect specifically for the WhatsApp card icon */
+.contact-card:hover .whatsapp-icon {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 8px rgba(37, 211, 102, 0.4));
+}
+
+/* Optional: Make the icon container flexible */
+.contact-card .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px; /* Adjust based on your card size */
+    margin-bottom: 20px;
+}
+.status-icon {
+    fill: var(--primary-teal); /* #0d4d4d */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contact-card:hover .status-icon {
+    fill: var(--accent-gold); /* #ca9126 */
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(202, 145, 38, 0.2));
+}
+
+/* Ensures the icon stays centered in your card layout */
+.contact-card .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 60px;
+}
+/* Status Badge Base */
+.status-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+/* Dynamic Colors */
+.status-badge.open {
+    background: #e8f5e9;
+    color: #2e7d32; /* Green */
+}
+
+.status-badge.closed {
+    background: #ffebee;
+    color: #c62828; /* Red */
+}
+/* --- CHAT NOW BUTTON STYLING --- */
+.btn-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #25D366; /* WhatsApp Green for instant recognition */
+    color: white !important; /* Forces white text */
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 12px 25px;
+    border-radius: 50px;
+    margin-top: 15px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    border: 2px solid transparent;
+}
+
+.btn-text:hover {
+    background: #128C7E; /* Darker WhatsApp Teal on hover */
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(18, 140, 126, 0.4);
+    letter-spacing: 0.5px;
+}
+
+/* Add a subtle shine animation */
+.btn-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.btn-text:hover::after {
+    left: 100%;
+}
+
+.btn-text:hover span {
+    transform: translateX(5px);
+}
+
+.btn-text span {
+    transition: transform 0.3s ease;
+}
+/* Location Badge inside the card */
+.location-badge {
+    background: rgba(13, 110, 110, 0.1);
+    color: var(--primary-teal);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    border: 1px solid rgba(13, 110, 110, 0.2);
+}
+
+/* Container for multiple buttons */
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+/* Secondary Action Button (The Pill) */
+.action-pill {
+    background: transparent;
+    border: 1.5px solid var(--primary-teal);
+    color: var(--primary-teal);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 80%;
+}
+
+.action-pill:hover {
+    background: var(--primary-teal);
+    color: white;
+}
+
+/* Teal version of your Chat Now button */
+.btn-teal {
+    background:#0d6e6e;
+    box-shadow: 0 4px 15px rgba(13, 110, 110, 0.2) !important;
+    width: 85%;
+    margin-top: 5px !important;
+}
+
+.btn-teal:hover {
+    background: var(--accent-gold) !important;
+    box-shadow: 0 8px 20px rgba(202, 145, 38, 0.3) !important;
+}
+/* Styling the Map Folding Icon */
+.map-explore-icon {
+    fill: var(--primary-teal); /* #0d4d4d */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Hover Effect: Gentle tilt and scale */
+.contact-card:hover .map-explore-icon {
+    fill: var(--accent-gold); /* #ca9126 */
+    transform: scale(1.1) rotate(-5deg);
+    filter: drop-shadow(0 4px 10px rgba(202, 145, 38, 0.3));
+}
+
+/* Ensure the icon container is centered */
+.contact-card .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    margin-bottom: 20px;
+}
+.map-container {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* ... your other map styles ... */
+}
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+/* --- MOBILE ONLY STYLES --- */
+@media (max-width: 768px) {
+    /* 1. Navbar & Hamburger */
+    .hamburger {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+    /* (Keep your hamburger and nav z-index as they are) */
+        /* 1. Navbar Layout */
+    nav {
+        flex-direction: row !important; /* Keep logo and hamburger on one line */
+        justify-content: space-between;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .nav-links {
+        /* FIX 1: Change display: none to visibility/opacity for animation */
+        display: flex !important; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fbf3df;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 9999 !important;
+
+        /* THE SLIDE BOUNCE SETUP */
+        opacity: 0;
+        pointer-events: none; /* Prevents clicking links while hidden */
+        transform: translateY(-20px); /* Start slightly higher */
+        
+        /* The cubic-bezier handles the "bouncy" snap back */
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* FIX 2: The "Open" state triggers the slide and bounce */
+    .nav-links.mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0); /* Slides down to its perfect spot */
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        font-size: 18px;
+        text-decoration: none;
+        color: #0d6e6e;
+        font-weight: 600;
+        display: block;
+        position: relative;
+    }
+
+    /* Small centered active line for the "Menu" link */
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 25px;
+        height: 2px;
+        background-color: #0d6e6e;
+        border-radius: 2px;
+    }
+}}
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }  
+
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }
+/* --- MOBILE SPECIFIC FIXES --- */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers everything in the mobile menu */
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .user-account-container {
+        margin: 15px 0; /* Adds spacing between links and the profile */
+        width: 90%; /* Gives it a better touch target width */
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-profile-trigger {
+        width: 100%; /* Makes the button look balanced */
+        justify-content: center;
+        padding: 12px 20px;
+        background: #fff; /* Contrast for mobile menu */
+        border: 1px solid #ff4d4d;
+    }
+
+    .user-dropdown {
+        position: relative; /* Changes from absolute so it pushes content down */
+        top: 10px;
+        right: 0;
+        width: 100%;
+        box-shadow: none; /* Cleaner look on mobile */
+        border: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    /* Prevent the dropdown from overlapping other nav links */
+    .user-dropdown.show {
+        display: block;
+        margin-bottom: 20px;
+    }
+}

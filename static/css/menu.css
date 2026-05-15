@@ -1,0 +1,1207 @@
+/* ========================================================= */
+/* --- Menu Page Grid Layout (Today's Menu) --- */
+/* ========================================================= */
+
+:root {
+    --primary-teal: #0d4d4d;
+    --accent-gold: #ca9126;
+     background-color: #f8edd3;
+   
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif;
+    overscroll-behavior-x: none;
+}
+
+body { background-color: var(--bg-cream); overflow-x: hidden;}
+
+.menu-page-container {
+    display: grid;
+    grid-template-columns: 2.8fr 1fr; /* Split layout, wider left side */
+    gap: 40px;
+   padding-top: 40px;
+    padding-left:40px;
+    padding-right: 25px;
+ /* Slightly warmer cream for contrast */
+}
+
+/* --- UNIFIED NAVBAR --- */
+nav {
+    background-color: #fbf3df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px; /* Standardized Desktop Padding */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.21);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0d6e6e;
+    margin-left: 35px; /* Standardized spacing */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0; /* Start at 0 width */
+  height: 1.6px; /* Thickness of the line */
+  background-color: #0d6e6e;
+  transition: width 0.3s ease; /* This creates the "sliding" animation */
+}
+.nav-links a:hover::after {
+  width: 50%; /* Expands to exactly half the width */
+}
+
+
+/* Unified Active Underline */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px; 
+    left: 0;
+    width: 100%; 
+    height: 1.6px; 
+    background: #0d6e6e;
+    border-radius: 2px;
+}
+
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+/* ========================================================= */
+/* --- Main Menu Column (Left) --- */
+/* ========================================================= */
+.special-banner {
+    width: 100%;
+    height: 350px;
+    background-image: url('../images/menu-banner.jpg'); /* Use the top banner background from the image */
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-overlay {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 620px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 15px;
+}
+
+.glass-overlay h2 {
+    color: #1a3a3a;
+    font-size: 26px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.glass-overlay h2 span { color: #e09a0d; } /* The gold from the screenshot */
+.glass-overlay p { color: #555; font-size: 16px; line-height: 1.6; }
+
+.day-heading {
+    color: #1a3a3a;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* --- The Menu Grid --- */
+/* --- Updated Menu Grid --- */
+.menu-grid {
+    display: grid;
+    /* 1. Use auto-fill instead of auto-fit */
+    /* 2. Set a max-width (e.g., 280px) instead of 1fr */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px;
+    /* 3. Keep cards aligned to the left side */
+    justify-content: start; 
+}
+
+/* Maintain 2-column layout for Mobile */
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+}
+
+/* --- The Dynamic Menu Card --- */
+.menu-card {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+   box-shadow: 5px 8px 8px rgba(0, 0, 0, 0.112);
+}
+
+.menu-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.menu-card .badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    font-size: 10px; font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 5px;
+}
+
+.badge-veg { background-color: #e6f7ef; color: #1c7a4b; }
+.badge-nonveg { background-color: #feebe8; color: #c03d2d; }
+
+.card-details {
+    padding: 15px;
+    position: relative;
+}
+
+.card-details h4 {
+    color: #1a3a3a;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.card-details .rating {
+    color: #f2ba4c; /* Gold from image */
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.card-details .price {
+    color: #1a3a3a;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Container for Price and Controls */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    background-color: #f1f5f5; /* Light teal-tinted grey */
+    border-radius: 8px;
+    padding: 4px;
+    gap: 12px;
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background-color: #0d6e6e; /* Your primary teal */
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.qty-btn:hover {
+    background-color: #0a5a5a;
+}
+
+.qty-btn.minus {
+    background-color: #ffffff;
+    color: #0d6e6e;
+    border: 1px solid #0d6e6e;
+}
+
+.qty-number {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1a3a3a;
+    min-width: 15px;
+    text-align: center;
+}
+
+/* ========================================================= */
+/* --- Sidebar Column (Right) --- */
+/* ========================================================= */
+.menu-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.search-bar {
+    background-color: white;
+    border-radius: 10px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.search-bar i { color: #888; }
+.search-bar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+.summary-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.summary-card h3 {
+    color: #1a3a3a;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+.summary-card h3:first-of-type { margin-top: 0; }
+.summary-card h3 i { margin-right: 8px; color: #0d6e6e; }
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.summary-line strong { color: #1a3a3a; }
+
+.summary-line.total {
+    margin-top: 20px;
+    border-top: 1px dashed #ddd;
+    padding-top: 20px;
+}
+
+.summary-line.total strong { font-size: 18px; color: #0d6e6e; }
+
+.how-to {
+    list-style: decimal;
+    margin-left: 18px;
+    color: #555;
+    font-size: 13px;
+    line-height: 2;
+}
+
+.status {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #555;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 10px; height: 10px;
+    background-color: #2ecf72;
+    border-radius: 50%;
+}
+
+/* ========================================================= */
+/* --- Responsive Adjustments --- */
+/* ========================================================= */
+@media (max-width: 1100px) {
+    .menu-page-container {
+        grid-template-columns: 1fr; /* Switch to column layout */
+    }
+}
+/* Container for both controls */
+.controls-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* The Separate Add Button */
+.primary-add-btn {
+    background-color: #27ae60; /* Solid Green */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 6px rgba(39, 174, 96, 0.2);
+}
+
+.primary-add-btn:hover {
+    background-color: #219150;
+    transform: translateY(-1px);
+}
+
+.primary-add-btn:active {
+    transform: scale(0.95);
+}
+
+/* Quantity Controls Styling */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9f9;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.qty-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: #2f3640;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-btn:hover {
+    color: #27ae60;
+}
+
+.qty-number {
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+    color: #1a3a3a;
+}
+/* Header Row for Name and Qty */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.card-header-row h4 {
+    flex: 1; /* Allows name to wrap if too long */
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+/* Small, compact Quantity Controls for the top */
+.quantity-controls.mini {
+    display: flex;
+    align-items: center;
+    background: #f1f1f1;
+    border-radius: 6px;
+    padding: 2px 5px;
+    border: 1px solid #ddd;
+}
+
+.quantity-controls.mini .qty-btn {
+    background: none;
+    border: none;
+    font-weight: bold;
+    color: #0d6e6e;
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 16px;
+}
+
+.quantity-controls.mini .qty-number {
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 15px;
+    text-align: center;
+}
+
+/* Footer styling */
+.card-footer-action {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.card-footer-action .price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a3a3a;
+}
+
+/* The Green Button */
+.green-add-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    width: 100%;
+}
+
+.green-add-btn:hover {
+    background-color: #219150;
+}
+/* Styling for when buttons are disabled */
+.green-add-btn:disabled {
+    background-color: #0d6e6e;
+    color: #ffffff;
+    opacity: 0.8;
+    box-shadow: none;
+    transform: none;
+}
+
+.qty-btn:disabled {
+    color: #999 !important;
+    border-color: #ddd !important;
+}
+
+/* Optional: Add a "Locked" look to the quantity number */
+.qty-btn:disabled + .qty-number {
+    color: #888;
+}
+#totalPrice {
+    display: inline-block; /* Required for the scale animation to work */
+    color: #0d6e6e;
+    transition: all 0.3s ease;
+}
+
+#itemCount {
+    color: #1a3a3a;
+    transition: all 0.3s ease;
+}
+/* Floating Button */
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    background-color: #27ae60;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    z-index: 2000;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floating-cart:hover { transform: scale(1.1); }
+
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #e74c3c;
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+/* Modal Overlay */
+.cart-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+/* Modal Box */
+.cart-modal {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 20px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+/* Individual Item in Popup */
+.cart-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.modal-footer {
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.upi-pay-btn {
+    width: 100%;
+    padding: 15px;
+    background: #0d6e6e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.upi-pay-btn:hover { background: #0a5a5a; }
+.modal-close-x {
+    background: #f1f1f1; /* Light grey circle */
+    border: none;
+    color: #555;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Makes it a circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.modal-close-x:hover {
+    background-color: #e74c3c; /* Turns red on hover */
+    color: white;
+    transform: rotate(90deg); /* Subtle spin effect */
+}
+
+/* Position adjustment for the header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+/* 1. Turn ONLY the image and text area black and white */
+.menu-card.unavailable img, 
+.menu-card.unavailable h4, 
+.menu-card.unavailable .rating, 
+.menu-card.unavailable .price {
+    filter: grayscale(100%);
+    opacity: 0.8; /* Makes them look "faded" out */
+}
+
+/* 2. Keep the Veg/Non-Veg Badge Colorful */
+.menu-card.unavailable .badge {
+    filter: none !important;
+    opacity: 1 !important;
+}
+/* 3. Keep the Button Bright Red */
+.menu-card.unavailable .green-add-btn {
+    background-color: #ff0000 !important; /* Solid Red */
+    color: white !important;
+    filter: none !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
+    pointer-events: none; /* Prevents adding to cart */
+}
+
+/* 4. Optional: Disable the plus/minus buttons visually */
+.menu-card.unavailable .quantity-controls {
+    opacity: 0.7;
+      filter: grayscale(100%);
+    pointer-events: none;
+}
+/* Container for the two images */
+/* Container for the two images */
+.sidebar-promo-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+/* Updated Wrapper: The "Card" itself now handles the transition */
+.promo-img-wrapper {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    
+    /* 1. Added transition to the wrapper */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    cursor: pointer;
+}
+
+/* Ensure the image just fills the space without its own transition */
+.promo-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 2. Entire Card Hover: Scales the whole wrapper */
+.promo-img-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1); /* Optional: makes it pop more */
+}
+/* The Semi-transparent background when drawer is open */
+.drawer-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+}
+
+/* The Drawer that slides from the left */
+.weekly-drawer {
+    position: fixed;
+    top: 0;
+    left: -400px; /* Hidden off-screen */
+    width: 350px;
+    height: 100%;
+    background: #fff;
+    z-index: 1000;
+    transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.weekly-drawer.open {
+    left: 0; /* Slide in */
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.drawer-header h2 { color: #0d6e6e; font-size: 1.5rem; }
+
+.day-section { margin-bottom: 20px; }
+.day-section h4 { 
+    color: #e91e63; /* Matches your CampusBites red */
+    border-left: 4px solid #e91e63;
+    padding-left: 10px;
+    margin-bottom: 8px;
+}
+
+.food-list-item {
+    font-size: 0.95rem;
+    padding: 5px 0;
+    color: #444;
+    border-bottom: 1px dashed #eee;
+}
+
+/* Overlay text for images */
+.promo-img-wrapper { position: relative; }
+.promo-overlay-text {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 0.7rem;
+    text-align: center;
+    padding: 5px 0;
+    font-weight: 600;
+}
+#closedrawer {
+    background: #f1f1f1;
+    border: none;
+    color: #555;
+    
+    /* Fixed Dimensions */
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px; /* Prevents squishing */
+    min-height: 32px;
+    
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    
+    /* CRITICAL: Prevents the header from squeezing the button */
+    flex-shrink: 0; 
+    box-sizing: border-box;
+    padding: 0; /* Ensures no internal padding changes the shape */
+}
+
+/* Ensure the icon inside doesn't move */
+#closedrawer i {
+    display: block;
+    line-height: 1;
+}
+
+#closedrawer:hover {
+    background-color: #e74c3c; 
+    color: white;
+    transform: rotate(90deg); 
+}
+@media (max-width: 768px) {
+    /* 1. The Container */
+    .menu-page-container {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    /* 2. Target the Sidebar Wrapper */
+    .menu-sidebar {
+        display: contents; /* This is the "magic" property */
+        /* 'contents' makes the browser act as if the <aside> tag 
+           doesn't exist, letting its children (search, promo, summary) 
+           interact directly with the menu-page-container order */
+    }
+
+    /* 3. Re-assign Orders to EVERYTHING in the container */
+    
+    .search-bar {
+        order: 1; /* Very Top */
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-promo-row {
+        order: 2; /* Under Search */
+        margin-bottom: 15px;
+    }
+
+    .menu-main {
+        order: 3; /* Food Grid & Banner in the middle */
+    }
+
+    .summary-card {
+        order: 4; /* ABSOLUTE BOTTOM */
+        margin-top: 30px;
+        width: 100%;
+    }
+
+    /* 4. Force 2 Cards */
+    .menu-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+    }
+}
+
+
+/* --- MOBILE ONLY STYLES --- */
+@media (max-width: 768px) {
+    /* 1. Navbar & Hamburger */
+    .hamburger {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+    /* (Keep your hamburger and nav z-index as they are) */
+        /* 1. Navbar Layout */
+    nav {
+        flex-direction: row !important; /* Keep logo and hamburger on one line */
+        justify-content: space-between;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .nav-links {
+        /* FIX 1: Change display: none to visibility/opacity for animation */
+        display: flex !important; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fbf3df;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 9999 !important;
+
+        /* THE SLIDE BOUNCE SETUP */
+        opacity: 0;
+        pointer-events: none; /* Prevents clicking links while hidden */
+        transform: translateY(-20px); /* Start slightly higher */
+        
+        /* The cubic-bezier handles the "bouncy" snap back */
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* FIX 2: The "Open" state triggers the slide and bounce */
+    .nav-links.mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0); /* Slides down to its perfect spot */
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        font-size: 18px;
+        text-decoration: none;
+        color: #0d6e6e;
+        font-weight: 600;
+        display: block;
+        position: relative;
+    }
+
+    /* Small centered active line for the "Menu" link */
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 25px;
+        height: 2px;
+        background-color: #0d6e6e;
+        border-radius: 2px;
+    }
+    
+    /* (Keep your Layout Reordering and Grid code exactly as it is below) */
+}
+.special-banner {
+    height: 250px;
+}
+/* --- Glass Overlay Mobile Shrink --- */
+.glass-overlay {
+    top: 15px !important;    /* Move it closer to the top edge */
+    left: 15px !important;   /* Move it closer to the left edge */
+    width: 80% !important;   /* Shrink width from 420px to a percentage of the screen */
+    max-width: 280px;        /* Set a maximum width so it doesn't get too big */
+    padding: 12px !important; /* Reduce inner spacing */
+    backdrop-filter: blur(10px); /* Slightly less blur for performance */
+}
+
+.glass-overlay h2 {
+    font-size: 16px !important; /* Smaller heading */
+    margin-bottom: 5px !important;
+}
+
+.glass-overlay p {
+    font-size: 11px !important; /* Smaller description */
+    line-height: 1.3 !important;
+}
+
+/* Ensure the banner itself isn't too tall on mobile */
+.special-banner {
+    height: 180px !important; 
+    margin-bottom: 15px !important;
+}
+.menu-page-container {
+    display: flex;
+    flex-direction: column;/* Split layout, wider left side */
+    gap: 20px;
+    padding: 10px;
+}
+    .menu-sidebar {
+        display: contents; /* Allows children to reorder globally */
+    }
+
+    .search-bar {
+        margin-top: 10px;
+        order: 1; /* First */
+        width: 100%;
+    }
+
+    .sidebar-promo-row {
+        order: 2; /* Second */
+        margin-bottom: 10px;
+    }
+
+    .menu-main {
+        order: 3; /* Third */
+    }
+
+    .summary-card {
+        order: 4; /* ABSOLUTE BOTTOM */
+        margin-top: 20px;
+    }
+
+    /* 3. 2-Column Food Grid */
+    .menu-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+
+
+    /* Scale down cards slightly for mobile */
+    .menu-card img {
+        height: 110px;
+    }
+    
+    .card-header-row h4 {
+        font-size: 13px;
+    }
+}
+/* Full screen overlay */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }
+/* --- MOBILE SPECIFIC FIXES --- */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers everything in the mobile menu */
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .user-account-container {
+        margin: 15px 0; /* Adds spacing between links and the profile */
+        width: 90%; /* Gives it a better touch target width */
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-profile-trigger {
+        width: 100%; /* Makes the button look balanced */
+        justify-content: center;
+        padding: 12px 20px;
+        background: #fff; /* Contrast for mobile menu */
+        border: 1px solid #ff4d4d;
+    }
+
+    .user-dropdown {
+        position: relative; /* Changes from absolute so it pushes content down */
+        top: 10px;
+        right: 0;
+        width: 100%;
+        box-shadow: none; /* Cleaner look on mobile */
+        border: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    /* Prevent the dropdown from overlapping other nav links */
+    .user-dropdown.show {
+        display: block;
+        margin-bottom: 20px;
+    }
+}

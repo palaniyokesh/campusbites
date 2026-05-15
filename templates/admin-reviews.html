@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Customer Reviews</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/admin-reviews.css">
+</head>
+<body>
+     <div class="page-transition-overlay" id="transitionOverlay">
+        <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+      <div class="nav-links" id="navLinks">
+    <a href="/admin-dashboard">Dashboard</a>
+    <a href="/analytics-page">Analytics</a>
+    <a href="#"class="active">Customer Reviews</a> 
+    <a href="/admin-login" class="logout-btn" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+    </nav>
+
+    <section class="admin-section">
+        <div class="admin-header">
+            <h1>Customer <span>Reviews</span></h1>
+            <p>Listen to what students are saying about Campus Bites</p>
+        </div>
+
+        <div class="reviews-grid" id="reviewsContainer">
+            </div>
+    </section>
+
+    <script>
+  // Use your server's actual IP
+const SERVER_URL = ""; 
+
+// Replace your existing loadAndRenderReviews function with this:
+async function loadAndRenderReviews() {
+    const container = document.getElementById('reviewsContainer');
+    const SERVER_URL = ""; // Use your Flask Server URL
+
+    try {
+        const response = await fetch(`${SERVER_URL}/admin/get-reviews`);
+        const reviews = await response.json();
+
+        if (reviews.length === 0) {
+            container.innerHTML = "<div class='no-reviews'>No reviews found yet.</div>";
+            return;
+        }
+
+        container.innerHTML = reviews.map(rev => `
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="user-info">
+                        <strong class="user-name">${rev.customer_name || 'Anonymous'}</strong>
+                        <span class="user-email">${rev.user_email || ''}</span>
+                    </div>
+                    <div class="review-stars">
+                        ${'★'.repeat(rev.stars)}${'☆'.repeat(5 - rev.stars)}
+                    </div>
+                </div>
+
+                <div class="review-body">
+                    <p class="review-text">"${rev.text}"</p>
+                    ${rev.media_url ? `
+                        <div class="review-media">
+                            <img src="${SERVER_URL}/${rev.media_url}" alt="Review Media" class="rev-img">
+                        </div>` : ''}
+                </div>
+
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error("Error loading reviews:", e);
+        container.innerHTML = "<p class='error-msg'>Connection to server failed.</p>";
+    }
+}
+
+
+// CRITICAL: Call the load function when the page opens
+window.onload = loadAndRenderReviews;
+ function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        const icon = document.querySelector('.hamburger i');
+
+        // Toggles the bounce animation
+        navLinks.classList.toggle('mobile-open');
+
+        // Optional: Switches the bars icon to an 'X' icon
+        if (navLinks.classList.contains('mobile-open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+    // 1. HANDLE PAGE ENTRY (Fade Out)
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('transitionOverlay');
+    if (overlay) overlay.classList.add('loaded');
+});
+
+// 2. HANDLE PAGE EXIT (Fade In on link click)
+document.querySelectorAll('.nav-links a:not(.logout-btn)').forEach(link => {
+    link.addEventListener('click', function (e) {
+        let destination = this.href;
+
+        if (destination && !destination.includes('#')) {
+            e.preventDefault();
+            const overlay = document.getElementById('transitionOverlay');
+            
+            overlay.classList.remove('loaded');
+            overlay.classList.add('exit');
+
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 500);
+        }
+    });
+});
+
+// 3. UPDATED LOGOUT WITH ANIMATION
+function adminLogout() {
+    const overlay = document.getElementById('transitionOverlay');
+    
+    // Play exit animation first
+    overlay.classList.remove('loaded');
+    overlay.classList.add('exit');
+
+    localStorage.removeItem('adminLoggedIn');
+    
+    // Redirect after animation
+    setTimeout(() => { 
+        window.location.href = "/admin-login"; 
+    }, 500);
+}
+
+    </script>
+</body>
+</html>

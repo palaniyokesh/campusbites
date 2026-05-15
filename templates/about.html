@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/about.css">
+      <title>CampusBites | About us</title>
+
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+    <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+</div>
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="CampusBites Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+         <div class="nav-links" id="navLinks">
+    <a href="/home">Home</a>
+    <a href="/menu">Menu</a>
+    <a href="#" class="active">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/my-orders" class="orders-btn">My Orders</a>
+    
+    <div class="user-account-container" id="userAccountSection" style="display: none;">
+        <div class="user-profile-trigger" onclick="toggleUserDropdown()">
+            <i class="fa-solid fa-circle-user"></i>
+            <span id="navUserName">Loading...</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-header">
+                <p class="user-id-label">User ID</p>
+                <p id="navUserEmail" class="user-email-text">email@campus.com</p>
+            </div>
+            <hr>
+            <button class="logout-btn" onclick="logoutUser()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+    
+    <a href="/login-page" id="navLoginBtn">Login</a>
+</div>
+    </nav>
+
+    <section class="hero">
+        <div class="content">
+            <div class="container-wrapper">
+            <img src="/static/images/char.png" alt="Pizza Hero" class="char-pizza">
+            <img src="/static/images/wood.png" alt="Wood Pedestal" class="log-pedestal">
+            <div class="container">
+            <h1>Welcome to Campus Bites</h1>
+            <p>
+                <span>Campus Bites </span>  was born from a simple observation: students spend
+                too much time in line and too little time enjoying their meals. Our mission is to bridge that gap by
+                providing a seamless pre-ordering system that respects your schedule. By prioritizing availability and
+                efficiency, we not only ensure you get the food you love but also help our campus canteen operate
+                sustainably by reducing daily food waste. We believe that good food should be fast, reliable, and always
+                ready for you."
+            </p>
+            </div>
+            <div class="mini-rate-container" id="rate-container">
+    <div class="rate-content" id="rate-ui">
+        <div class="input-wrapper">
+            <textarea class="review-textarea" id="review-text" placeholder="Share your experience..."></textarea>
+            
+            <div id="media-preview-container" class="preview-grid"></div>
+
+            <div class="input-actions">
+                <label for="media-input" class="media-btn">
+                    <i class="fas fa-camera"></i>
+                    <span id="file-name">Add Photo/Video</span>
+                </label>
+                <input type="file" id="media-input" hidden accept="image/*,video/*">
+            </div>
+        </div>
+
+        <div class="rate-footer">
+            <div class="stars" id="star-rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+           <button type="button" class="mini-btn" id="submit-btn" onclick="void(0)">Submit Review</button>
+        </div>
+    </div>
+</div>
+ <p class="footer-text">Follow us on</p>
+<div class="social-login">
+                <a href="#" class="social-icon gp"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon fb"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon tw"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+
+        </div>
+        
+    </section>
+    
+
+</body>
+<script>
+    // 1. CONFIGURATION
+    const API_URL = ""; 
+
+    // 2. NAVIGATION MENU LOGIC
+    function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        const icon = document.querySelector('.hamburger i');
+        navLinks.classList.toggle('mobile-open');
+        if (navLinks.classList.contains('mobile-open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+
+    // 3. UI ELEMENT REFERENCES
+    const stars = document.querySelectorAll('.star');
+    const rateUI = document.getElementById('rate-ui');
+    const submitBtn = document.getElementById('submit-btn');
+    const mediaInput = document.getElementById('media-input');
+    const previewContainer = document.getElementById('media-preview-container');
+    const reviewText = document.getElementById('review-text');
+    
+    let selectedRating = 0;
+    let uploadedFile = null; 
+
+    // 4. MEDIA PREVIEW LOGIC
+    mediaInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            uploadedFile = file;
+            previewContainer.innerHTML = ''; 
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                if (file.type.startsWith('image/')) {
+                    div.innerHTML = `<img src="${e.target.result}"><button class="remove-media">×</button>`;
+                } else {
+                    div.innerHTML = `<video src="${e.target.result}"></video><button class="remove-media">×</button>`;
+                }
+                previewContainer.appendChild(div);
+                div.querySelector('.remove-media').onclick = () => {
+                    previewContainer.innerHTML = '';
+                    uploadedFile = null;
+                    mediaInput.value = '';
+                };
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 5. STAR RATING LOGIC
+    stars.forEach((star, index) => {
+        star.addEventListener('mouseover', () => updateStars(index));
+        star.addEventListener('mouseleave', () => updateStars(selectedRating - 1));
+        star.addEventListener('click', () => {
+            selectedRating = index + 1;
+            updateStars(index);
+        });
+    });
+
+    function updateStars(limitIndex) {
+        stars.forEach((s, i) => {
+            s.classList.toggle('active', i <= limitIndex);
+        });
+    }
+
+    // 6. MERGED SUBMISSION LOGIC (UI + BACKEND)
+    document.getElementById('submit-btn').addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const text = reviewText.value.trim();
+        
+        // Validation
+        if (selectedRating === 0 && text === "" && uploadedFile === null) {
+            return alert("Please provide a rating, text, or a photo!");
+        }
+
+        // Prepare data for the background upload
+        const formData = new FormData();
+        formData.append('stars', selectedRating);
+        formData.append('text', text);
+        if (uploadedFile) {
+            formData.append('media', uploadedFile);
+        }
+
+        // Instant UI Response (User sees success immediately)
+        const originalContent = rateUI.innerHTML; // Store in case of error
+        rateUI.innerHTML = `
+            <div style="text-align: center; animation: fadeIn 0.5s ease; padding: 20px;">
+                <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #ca9126;"></i><br><br>
+                <span style="font-weight: bold; color:white;">Review Submitted!</span>
+            </div>
+        `;
+
+        try {
+            const response = await fetch(`${API_URL}/submit-review`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // Sends session cookie for user identity
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // If the server rejected it, restore the UI and alert
+                rateUI.innerHTML = originalContent;
+                alert(result.message || "Failed to submit. Are you logged in?");
+            }
+        } catch (error) {
+            console.error("Connection Error:", error);
+            rateUI.innerHTML = originalContent; // Restore UI
+            alert("Could not connect to the server. Please check if Flask is running.");
+        }
+    });
+
+    // 7. PAGE TRANSITIONS
+    window.addEventListener('load', () => {
+        const overlay = document.getElementById('transitionOverlay');
+        overlay.classList.add('loaded');
+    });
+
+    document.querySelectorAll('a, .btn-menu').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const destination = this.href || this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+            if (destination && !destination.startsWith('#') && !this.target && !this.href.includes('javascript:void(0)')) {
+                e.preventDefault();
+                const overlay = document.getElementById('transitionOverlay');
+                overlay.classList.remove('loaded');
+                overlay.classList.add('exit');
+                setTimeout(() => {
+                    window.location.href = destination;
+                }, 500);
+            }
+        });
+    });
+    // --- Account Management Logic ---
+
+// 1. Check Session & Update Nav
+async function checkUserSession() {
+    try {
+        // We use credentials: 'include' to pass the session cookie
+        const response = await fetch('/get-session', {
+            method: 'GET',
+            credentials: 'include' 
+        });
+        
+        const data = await response.json();
+
+        if (data.logged_in) {
+            document.getElementById('userAccountSection').style.display = 'inline-block';
+            document.getElementById('navLoginBtn').style.display = 'none';
+            document.getElementById('navUserName').innerText = data.user_name;
+            document.getElementById('navUserEmail').innerText = data.user_email;
+        } else {
+            document.getElementById('userAccountSection').style.display = 'none';
+            document.getElementById('navLoginBtn').style.display = 'block';
+        }
+    } catch (error) {
+        console.error("Session Error:", error);
+    }
+}
+
+// 2. Toggle Dropdown visibility
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// 3. Logout User
+async function logoutUser() {
+    try {
+        await fetch('/logout', { 
+            method: 'POST',
+            credentials: 'include'
+        });
+        window.location.href = "/login-page";
+    } catch (err) {
+        alert("Logout failed!");
+    }
+}
+
+// Close dropdown if clicking outside
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-account-container')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// INITIALIZE: Call this inside your existing window 'load' listener
+window.addEventListener('load', () => {
+    checkUserSession(); // Added this
+    // ... your existing overlay code ...
+});
+</script>
+
+</html>

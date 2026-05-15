@@ -1,0 +1,542 @@
+:root {
+    --primary-teal: #0d4d4d;
+    --accent-gold: #ca9126;
+     background-color: #f8edd3;
+   
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif;
+overscroll-behavior-y: none;
+            overscroll-behavior-x: none;
+    
+    /* Ensure the background stays fixed relative to the viewport */
+    background-attachment: fixed; }
+
+
+
+/* --- UNIFIED NAVBAR --- */
+nav {
+    background-color: #fbf3df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px; /* Standardized Desktop Padding */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.21);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0d6e6e;
+    margin-left: 35px; /* Standardized spacing */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0; /* Start at 0 width */
+  height: 1.6px; /* Thickness of the line */
+  background-color: #0d6e6e;
+  transition: width 0.3s ease; /* This creates the "sliding" animation */
+}
+.nav-links a:hover::after {
+  width: 50%; /* Expands to exactly half the width */
+}
+
+/* Unified Active Underline */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px; 
+    left: 0;
+    width: 100%; 
+    height: 1.6px; 
+    background: #0d6e6e;
+    border-radius: 2px;
+}
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+.hero {
+    display: flex;
+    padding-top: 40px;
+    padding-left: 35px;
+    padding-right: 25px;
+    align-items: center;
+    gap: 50px;
+}
+
+.hero-content { flex: 1.2; }
+
+.hero-content h1 {
+    font-size: 45px;
+    color:#0b6363;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-content h1 span { color: var(--accent-gold); }
+
+.hero-content p {
+    color: #555;
+    max-width: 500px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* --- 1. BASE STYLES (Mobile/Small Screens) --- */
+.btn-menu {
+    /* Make it wide enough to tap on mobile */
+    width: 90%; 
+    max-width: 320px; /* Prevents it from being full-screen on tablets */
+    padding: 12px 20px; /* Slightly smaller padding for mobile */
+    display: block;
+    margin: 15px auto; /* Centered on mobile */
+    
+    /* Your existing design styles */
+    background-color: #0d6e6e;
+    color: white;
+    font-weight: 700;
+    border: solid #0d6e6e 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(13, 110, 110, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile tap */
+}
+
+/* --- 2. DESKTOP STYLES (Laptops/PC) --- */
+@media (min-width: 1024px) {
+    .btn-menu {
+        width: 30%; /* Your specific 30% width for large screens */
+        margin: 18px 0px; /* Your specific margin for desktop */
+        padding: 15px 30px;
+    }
+}
+
+/* --- 3. SHIMMER EFFECT (Works on all devices) --- */
+.btn-menu::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.btn-menu:hover {
+    background-color: var(--accent-gold, #ca9126);
+    border-color: var(--accent-gold, #ca9126);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(18, 140, 126, 0.4);
+    letter-spacing: 0.5px;
+}
+
+.btn-menu:hover::after {
+    left: 100%;
+}
+/* Scrolling Container with Fade Mask */
+.scrolling-container {
+    width: 100%;
+    max-width: 650px;
+}
+
+.scrolling-container h3 {
+    color: var(--primary-teal);
+    margin-bottom: 25px;
+}
+
+.scroll-wrapper {
+    overflow: hidden;
+    position: relative;
+    /* This creates the fade at start and end */
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+
+.scroll-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: scroll 25s linear infinite;
+}
+
+.food-card { flex: 0 0 160px; text-align: left; }
+
+
+.food-card img {
+    width: 160px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+
+.food-card p {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-teal);
+    text-transform: capitalize;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Right Side Image */
+.hero-image { flex: 1; }
+.hero-image img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+    /* --- Desktop & Large Screens (Default) --- */
+    /* Your existing styles sit here */
+
+    /* --- Tablet & Small Laptops (max-width: 1024px) --- */
+    /* --- TABLET & SMALL LAPTOPS --- */
+@media screen and (max-width: 1024px) {
+    .hero {
+        padding: 40px 5%;
+        gap: 30px;
+    }
+    .hero-content h1 { font-size: 42px; }
+}
+
+/* --- MOBILE & LARGE PHONES (The Big Fix) --- */
+@media screen and (max-width: 768px) {
+
+    /* 3. Hero Section Fixes */
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 20px;
+    }
+
+    .hero-content { order: 2; width: 100%; }
+    .hero-image { order: 1; width: 100%; }
+
+    .hero-content h1 { font-size: 32px; }
+    .hero-content p { margin: 0 auto 20px; }
+
+    /* 4. Food Cards Fix */
+    .food-card { flex: 0 0 140px; }
+    .food-card img { width: 140px; height: 100px; }
+}
+@media screen and (max-width: 768px) {
+    /* 1. Force Nav to stay in a row for Logo and Hamburger */
+    nav {
+        flex-direction: row !important; 
+        justify-content: space-between;
+        padding: 15px 25px !important; /* Tighter mobile padding */
+    }
+
+    .hamburger {
+        display: block !important; /* Show icon on mobile */
+    }
+
+    /* 2. Unified Slide-Down Menu */
+    .nav-links {
+        display: flex !important;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fbf3df;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 9999;
+
+        /* Bounce Animation */
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-20px);
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .nav-links.mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .nav-links a {
+        margin: 12px 0 !important;
+        margin-left: 0 !important; /* Remove desktop margin-left */
+        font-size: 18px !important;
+        display: block;
+    }
+
+    /* Standardized Active Underline for Mobile */
+    .nav-links a.active::after {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+    }
+}
+/* Full screen overlay */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+.user-dashboard {
+    padding: 40px 5%;
+    margin-top: -50px; /* Overlaps slightly with hero for a modern look */
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.order-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.order-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    border-left: 5px solid #e09a0d; /* Brand color accent */
+}
+
+.order-item h4 {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-item ul {
+    list-style: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.status-badge {
+    background: #0d6e6e;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+}
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }
+/* --- MOBILE SPECIFIC FIXES --- */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers everything in the mobile menu */
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .user-account-container {
+        margin: 15px 0; /* Adds spacing between links and the profile */
+        width: 90%; /* Gives it a better touch target width */
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-profile-trigger {
+        width: 100%; /* Makes the button look balanced */
+        justify-content: center;
+        padding: 12px 20px;
+        background: #fff; /* Contrast for mobile menu */
+        border: 1px solid #ff4d4d;
+    }
+
+    .user-dropdown {
+        position: relative; /* Changes from absolute so it pushes content down */
+        top: 10px;
+        right: 0;
+        width: 100%;
+        box-shadow: none; /* Cleaner look on mobile */
+        border: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    /* Prevent the dropdown from overlapping other nav links */
+    .user-dropdown.show {
+        display: block;
+        margin-bottom: 20px;
+    }
+}

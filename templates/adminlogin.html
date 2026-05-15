@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Bites | Admin Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/login.css"> 
+    <style>
+        /* Specific tweak for Admin Gold Theme */
+        .btn-admin { background-color: #ca9126 !important; }
+        .btn-admin:hover { background-color: #b07d1f !important; }
+        .page-watermark { color: rgba(202, 145, 38, 0.1) !important; }
+    </style>
+</head>
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+        <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" class="transition-logo">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="page-watermark">Admin</div>
+
+    <div class="login-card">
+        <img src="/static/images/login.png" class="card-logo">
+        <p class="subtitle">Management Portal. <br>Please enter the <span>Admin Access Code.</span></p>
+
+        <form id="adminLoginForm">
+            <div class="input-group">
+                <i class="fa-solid fa-shield-halved"></i>
+                <input type="password" id="accessCode" placeholder="Enter Access Code" required>
+            </div>
+
+            <button type="submit" class="btn-login btn-admin">Grant Access</button>
+        </form>
+        
+        <div class="signup-link">
+            Not an admin? <a href="/login-page">Student Login</a>
+        </div>
+    </div>
+
+<script>
+    // 1. Handle Page Load Overlay
+    window.addEventListener('load', () => {
+        const overlay = document.getElementById('transitionOverlay');
+        if (overlay) overlay.classList.add('loaded');
+    });
+
+    // 2. Admin Access Logic
+    const adminForm = document.getElementById('adminLoginForm');
+    adminForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const code = document.getElementById('accessCode').value;
+
+        if (code === "campus123") {
+            // --- CRITICAL FIX: Save the stamp INSIDE the click event ---
+            localStorage.setItem('adminLoggedIn', 'true');
+            console.log("Login Successful: Stamp Saved.");
+
+            const overlay = document.getElementById('transitionOverlay');
+            if (overlay) {
+                overlay.classList.remove('loaded');
+                overlay.classList.add('exit');
+            }
+
+            // Redirect after the animation
+            setTimeout(() => {
+                window.location.href = "/admin-dashboard"; 
+            }, 500);
+        } else {
+            alert("Invalid Admin Code! Access Denied.");
+            document.getElementById('accessCode').value = ""; 
+        }
+    });
+</script>
+</body>
+</html>

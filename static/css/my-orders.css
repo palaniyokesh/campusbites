@@ -1,0 +1,453 @@
+    :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --primary: #0d6e6e;
+            --accent: #e09a0d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif;
+overscroll-behavior-y: none;
+            overscroll-behavior-x: none;
+    
+    /* Ensure the background stays fixed relative to the viewport */
+    background-attachment: fixed; }
+        body {
+            margin: 0;
+            padding: 0;
+              background: linear-gradient(#f8edd38e, rgba(0, 0, 0, 0.24)), 
+                        url('../images/backgroundorders.jpg');
+                            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height:130vh;
+            color: rgb(0, 0, 0);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h2 { text-align: center; margin-bottom: 30px; font-weight: 600; }
+
+        /* The Order Ticket Card */
+        .order-card {
+            background-color: rgba(255, 255, 255, 0.21);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.775);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.558);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .token-id {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color:#0d6e6e;
+            letter-spacing: 2px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .status-pending { background: rgba(224, 154, 13, 0.2); color: #ffcc00; border: 1px solid #ffcc00; }
+        .status-paid { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+
+        .items-list { list-style: none; padding: 0; margin: 10px 0; }
+        .items-list li { display: flex; justify-content: space-between; margin-bottom: 5px; opacity: 0.9; }
+
+        .total-row {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: right;
+            color: #0d6e6e;
+        }
+
+        .no-orders { text-align: center; padding: 50px; opacity: 0.7; }
+
+        .back-home {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        nav {
+    background-color: #fbf3df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px; /* Standardized Desktop Padding */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.21);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0d6e6e;
+    margin-left: 35px; /* Standardized spacing */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0; /* Start at 0 width */
+  height: 1.6px; /* Thickness of the line */
+  background-color: #0d6e6e;
+  transition: width 0.3s ease; /* This creates the "sliding" animation */
+}
+.nav-links a:hover::after {
+  width: 50%; /* Expands to exactly half the width */
+}
+
+/* Unified Active Underline */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px; 
+    left: 0;
+    width: 100%; 
+    height: 1.6px; 
+    background: #0d6e6e;
+    border-radius: 2px;
+}
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+/* --- MOBILE ONLY STYLES --- */
+@media (max-width: 768px) {
+    /* 1. Navbar & Hamburger */
+    .hamburger {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+    /* (Keep your hamburger and nav z-index as they are) */
+        /* 1. Navbar Layout */
+    nav {
+        flex-direction: row !important; /* Keep logo and hamburger on one line */
+        justify-content: space-between;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .nav-links {
+        /* FIX 1: Change display: none to visibility/opacity for animation */
+        display: flex !important; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fbf3df;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 9999 !important;
+
+        /* THE SLIDE BOUNCE SETUP */
+        opacity: 0;
+        pointer-events: none; /* Prevents clicking links while hidden */
+        transform: translateY(-20px); /* Start slightly higher */
+        
+        /* The cubic-bezier handles the "bouncy" snap back */
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* FIX 2: The "Open" state triggers the slide and bounce */
+    .nav-links.mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0); /* Slides down to its perfect spot */
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        font-size: 18px;
+        text-decoration: none;
+        color: #0d6e6e;
+        font-weight: 600;
+        display: block;
+        position: relative;
+    }
+
+    /* Small centered active line for the "Menu" link */
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 25px;
+        height: 2px;
+        background-color: #0d6e6e;
+        border-radius: 2px;
+    }
+}}
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+/* Unique Minimalist Cancel Button */
+.btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(255, 71, 71, 0.3);
+    color: rgba(255, 71, 71, 0.8);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem; /* Small & Clean */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 71, 71, 0.1);
+    border-color: #ff4747;
+    color: #ff4747;
+    box-shadow: 0 0 10px rgba(255, 71, 71, 0.2);
+    transform: scale(1.02);
+}
+
+/* Cancelled State - Super Unique */
+.status-cancelled {
+    font-size: 0.7rem;
+    color: #ff4747;
+    background: rgba(255, 71, 71, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 0.5px solid rgba(255, 71, 71, 0.2);
+    text-transform: uppercase;
+}
+
+.order-card.cancelled {
+    filter: grayscale(0.5); /* Makes the whole card look 'disabled' */
+    opacity: 0.7;
+    border-right: 3px solid #ff4747; /* Switched side for uniqueness */
+}
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }
+/* --- MOBILE SPECIFIC FIXES --- */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers everything in the mobile menu */
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .user-account-container {
+        margin: 15px 0; /* Adds spacing between links and the profile */
+        width: 90%; /* Gives it a better touch target width */
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-profile-trigger {
+        width: 100%; /* Makes the button look balanced */
+        justify-content: center;
+        padding: 12px 20px;
+        background: #fff; /* Contrast for mobile menu */
+        border: 1px solid #ff4d4d;
+    }
+
+    .user-dropdown {
+        position: relative; /* Changes from absolute so it pushes content down */
+        top: 10px;
+        right: 0;
+        width: 100%;
+        box-shadow: none; /* Cleaner look on mobile */
+        border: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    /* Prevent the dropdown from overlapping other nav links */
+    .user-dropdown.show {
+        display: block;
+        margin-bottom: 20px;
+    }
+}

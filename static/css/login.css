@@ -1,0 +1,278 @@
+    * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Montserrat', sans-serif;
+            }
+
+            body {
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                /* Background Image from your screenshot */
+                background-image: url('../images/background.png'); 
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                position: relative;
+            }
+
+            /* Large watermarked title at the top */
+            .page-watermark {
+                position: absolute;
+                top: 0px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 8rem;
+                font-weight: 700;
+                color: rgba(0, 0, 0, 0.177); /* Extremely faint */
+                user-select: none;
+                text-transform: capitalize;
+            }
+
+            /* The Main White Card Container */
+            .login-card {
+                margin-bottom: 10px;
+                background-color: white;
+                padding: 30px 60px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.189);
+                width: 420px;
+                text-align: center;
+                z-index: 10;
+            }
+
+            /* Small Pizza Logo */
+            .card-logo {
+                width: 170px;
+            }
+
+            /* Login Heading */
+            h2 {
+                font-size: 2.2rem;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            /* Subtitle */
+            .subtitle {
+                color: #888;
+                font-size: 12px;
+                margin-bottom: 20px;
+                line-height: 23px;
+            }
+            .subtitle span {
+                color: #0d4d4d; /* Purple/pink color from your screenshot */
+                font-weight: 800;
+            }
+
+            /* Input Group (Icon + Input) */
+            .input-group {
+                position: relative;
+                margin-bottom: 20px;
+                text-align: left;
+            }
+
+            .input-group i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #aaa;
+                font-size: 1.1rem;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 15px 15px 15px 45px; /* Leave space for icon */
+                border: 1px solid #e1e1e1;
+                border-radius: 4px;
+                font-size: 1rem;
+                color: #333;
+                transition: border-color 0.3s;
+            }
+
+            .input-group input:focus {
+                outline: none;
+                border-color: #ca9126; /* Pink highlight */
+            }
+
+            /* Options row (Remember me, Forgot Password) */
+            .options-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.85rem;
+                color: #777;
+                margin-bottom: 30px;
+            }
+
+            .options-row input[type="checkbox"] {
+                margin-right: 8px;
+                accent-color: #0d4d4d; /* Checkbox color */
+            }
+
+            .forgot-pass {
+                text-decoration: none;
+                color: #e0a231;
+                font-weight: 500;
+            }
+
+            /* Main Login Button */
+            .btn-login {
+                width: 100%;
+                background-color: #196565; /* The exact pink from your design */
+                color: white;
+                border: none;
+                padding: 18px;
+                border-radius: 4px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 10px;
+            }
+
+            .btn-login:hover {
+                background-color: #0d4d4d; /* Darker pink on hover */
+            }
+
+.signup-link {
+    margin-top: 15px; /* Space above the link */
+    font-size: 0.75rem; /* Matches the smaller card sizing */
+    color: #888; /* Subtle gray */
+}
+
+.signup-link a {
+    color: #e0a231; /* Your brand's pink/red color */
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+    color: #d19424; /* Darker pink on hover */
+    text-decoration: underline;
+}
+
+/* Optional: If you still have social icons, add more space */
+.social-login-text {
+    margin-top: 20px;
+}
+
+            /* Responsive Design Tweak */
+            @media (max-width: 768px) {
+                .page-watermark { font-size: 4rem; top: 10px; }
+                .login-card { width: 90%; padding: 40px 30px; }
+                .page-footer { flex-direction: column; height: 120px; justify-content: center; gap: 10px; text-align: center; }
+            }
+            /* --- 1. Tablet & Small Laptops (Max-width: 1024px) --- */
+@media (max-width: 1024px) {
+    .page-watermark {
+        font-size: 5rem; /* Shrink the giant background text */
+    }
+    .login-card {
+        width: 400px; /* Slightly tighten the card */
+    }
+}
+
+/* --- 2. Standard Mobile Phones (Max-width: 768px) --- */
+@media (max-width: 768px) {
+    body {
+        /* Ensure the background doesn't look stretched or pixelated */
+        background-attachment: scroll; 
+    }
+    .page-watermark {
+        font-size: 3.5rem;
+        top: 10px;
+    }
+    .login-card {
+        width: 90%; /* Let the card breathe on narrow screens */
+        padding: 30px 25px; /* Reduce internal padding to save space */
+    }
+}
+
+/* --- 3. Very Small Devices (Max-width: 480px) --- */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.8rem; /* Make heading smaller so it doesn't wrap weirdly */
+    }
+    .options-row {
+        flex-direction: column; /* Stack "Remember Me" and "Forgot Password" */
+        gap: 15px;
+        align-items: flex-start;
+    }
+    .card-logo {
+        width: 130px; /* Scale down the logo */
+    }
+}
+/* Full screen overlay */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+.page-transition-overlay.exit {
+    opacity: 1;
+    visibility: visible;
+}

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBites | Menu & Order</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/menu.css">
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+    <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+</div>
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="CampusBites Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+          <div class="nav-links" id="navLinks">
+    <a href="/home">Home</a>
+    <a href="#"  class="active">Menu</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/my-orders" class="orders-btn">My Orders</a>
+    
+    <div class="user-account-container" id="userAccountSection" style="display: none;">
+        <div class="user-profile-trigger" onclick="toggleUserDropdown()">
+            <i class="fa-solid fa-circle-user"></i>
+            <span id="navUserName">Loading...</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-header">
+                <p class="user-id-label">User ID</p>
+                <p id="navUserEmail" class="user-email-text">email@campus.com</p>
+            </div>
+            <hr>
+            <button class="logout-btn" onclick="logoutUser()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+    
+    <a href="/login-page" id="navLoginBtn">Login</a>
+</div>
+    </nav>
+
+    <div class="menu-page-container">
+
+        <main class="menu-main">
+            <section class="special-banner">
+                <div class="glass-overlay">
+                    <h2>Today's <span>Special</span> Menu</h2>
+                    <p>Order your favorite <b>meals</b> with us and skip long queues and unnecessary delays. Our smart
+                        pre-order system helps you save time, avoid crowds, and enjoy fresh, hygienic food right when
+                        you need it. Simple ordering, quick service, and a smooth experience — made just for busy
+                        students like you!</p>
+                </div>
+            </section>
+
+            <h1 id="dayHeading" class="day-heading"></h1>
+
+            <div class="menu-grid" id="menuGrid">
+            </div>
+        </main>
+
+        <aside class="menu-sidebar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search food...">
+            </div>
+            <div class="sidebar-promo-row">
+                <div class="promo-img-wrapper" onclick="showWeeklyMenu('breakfast')">
+                    <img src="/static/images/breakfast.png" alt="Breakfast">
+                    <div class="promo-overlay-text">Weekly Breakfast</div>
+                </div>
+                <div class="promo-img-wrapper" onclick="showWeeklyMenu('lunch')">
+                    <img src="/static/images/lunch.png" alt="Lunch">
+                    <div class="promo-overlay-text">Weekly Lunch</div>
+                </div>
+            </div>
+
+            <div id="weeklyMenuDrawer" class="weekly-drawer">
+                <div class="drawer-header">
+                    <h2 id="drawerTitle">Weekly Menu</h2>
+                    <button id="closedrawer" onclick="closeDrawer()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="drawerContent" class="drawer-content"></div>
+            </div>
+            <div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+            <div class="summary-card">
+                <h3><i class="fas fa-shopping-cart"></i> Your Order</h3>
+                <div class="summary-line"><span>Day:</span> <strong id="summaryDay">Sunday</strong></div>
+                <div class="summary-line"><span>Items selected:</span> <strong id="itemCount">0</strong></div>
+                <div class="summary-line total"><span>Estimated total:</span> <strong id="totalPrice">₹0</strong></div>
+
+                <h3><i class="fas fa-motorcycle"></i> Pickup Info</h3>
+                <div class="summary-line"><span>Ready in:</span> <strong>12:50 PM</strong></div>
+                <div class="summary-line"><span>Counter:</span> <strong>Canteen</strong></div>
+
+                <h3>How to Order</h3>
+                <ol class="how-to">
+                    <li>Select food items</li>
+                    <li>Click the <i class="fas fa-shopping-cart"></i> cart icon</li>
+                    <li>Confirm & pay via UPI</li>
+                    <li>Pickup at counter</li>
+                </ol>
+
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Orders close at 10:00 AM
+                </div>
+            </div>
+        </aside>
+    </div>
+
+
+
+
+    <script>
+        // A. Keep your existing Daily Menu logic, but clean it up
+      const dailyMenu = {
+    Monday: [
+            { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+            { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+            { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+            { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+            { img: "/static/images/sambar.png", name: "Samabar Meals", price: 100, isVeg: true },
+            { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+            { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+            { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+            { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true },
+    ],
+    Tuesday: [
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/morkulambu.png", name: "Mor kulambu Meals", price: 50, isVeg: true },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ],
+    Wednesday: [
+        { img: "/static/images/pongal.png", name: "Pongal", price: 40, isVeg: true, isBreakfast: true },
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/puli kulambu.png", name: "Puli kulambu Meals", price: 50, isVeg: true },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ],
+    Thursday: [
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vegBiryani.jpg", name: "Veg Biriyani", price: 80, isVeg: true },
+        { img: "/static/images/chicken 65.png", name: "Chicken 65", price: 50, isVeg: false },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ],
+    Friday: [
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/sambar.png", name: "Sambar Meals", price: 50, isVeg: true },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ],
+    Saturday: [
+        { img: "/static/images/porrota.png", name: "Parotta", price: 20, isVeg: true,isBreakfast: true},
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/sambar.png", name: "Sambar Meals", price: 50, isVeg: true },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ],
+    Sunday: [
+        { img: "/static/images/porrota.png", name: "Parotta", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.jpg", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/dosai.png", name: "Dosai", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/idli.png", name: "Idli", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/vadai.png", name: "Vadai", price: 10, isVeg: true, isBreakfast: true },
+        { img: "/static/images/poori.png", name: "Poori", price: 20, isVeg: true, isBreakfast: true },
+        { img: "/static/images/Chic fried.png", name: "Chicken Fried Rice", price: 80, isVeg: false },
+        { img: "/static/images/vegfried.png", name: "Veg Fried Rice", price: 60, isVeg: true },
+        { img: "/static/images/chicbiri.png", name: "Chicken Biryani", price: 100, isVeg: false },
+        { img: "/static/images/juice.jpg", name: "Fresh juices", price: 20, isVeg: true }
+    ]
+};
+
+        // B. Automatically detect the day
+        const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+        const grid = document.getElementById("menuGrid");
+        const heading = document.getElementById("dayHeading");
+        const summaryDayText = document.getElementById("summaryDay");
+
+        // C. Dynamic Title Update
+        heading.innerText = `${today}'s Menu`;
+        summaryDayText.innerText = today; // Sync sidebar day
+        function createMenuCard(foodItem) {
+            const vegBadgeClass = foodItem.isVeg ? 'badge-veg' : 'badge-nonveg';
+            const vegBadgeText = foodItem.isVeg ? 'VEG' : 'NON-VEG';
+            const starRating = '<i class="fas fa-star"></i>'.repeat(4);
+
+            // Time Check: 10:00 AM is hour 10
+            const now = new Date();
+            const isPastTen = now.getHours() >= 10;
+            const isUnavailable = foodItem.isBreakfast && isPastTen;
+
+            // Determine Button State
+            const buttonHTML = isUnavailable
+                ? `<button class="green-add-btn">UNAVAILABLE</button>`
+                : `<button class="green-add-btn" onclick="addToCart(this, '${foodItem.name}', ${foodItem.price})">ADD TO CART</button>`;
+
+            return `
+    <div class="menu-card ${isUnavailable ? 'unavailable' : ''}">
+        <span class="badge ${vegBadgeClass}">${vegBadgeText}</span>
+        <img src="${foodItem.img}" alt="${foodItem.name}">
+        
+        <div class="card-details">
+            <div class="card-header-row">
+                <h4>${foodItem.name}</h4>
+                <div class="quantity-controls mini">
+                    <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                    <span class="qty-number">1</span>
+                    <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                </div>
+            </div>
+
+            <div class="rating">${starRating}</div>
+            
+            <div class="card-footer-action">
+                <span class="price">₹${foodItem.price}</span>
+                ${buttonHTML}
+            </div>
+        </div>
+    </div>`;
+        }
+        // Logic for the Add button
+        // --- Global Cart State ---
+        // --- Global State ---
+        let totalItems = 0;
+        let totalPrice = 0;
+        let cartItems = []; // Array to store objects like {name, price, qty}
+
+        function addToCart(btn, name, price) {
+            const card = btn.closest('.menu-card');
+            const qtyButtons = card.querySelectorAll('.qty-btn');
+            const qtyNumber = card.querySelector('.qty-number');
+            const currentQty = parseInt(qtyNumber.innerText);
+
+            // 1. Prevent adding 0 items
+            if (currentQty <= 0) {
+                alert("Please select at least 1 item");
+                return;
+            }
+
+            // 2. Disable UI to "Lock" the selection
+            qtyButtons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = "0.5";
+                button.style.cursor = "not-allowed";
+            });
+
+            btn.innerHTML = `<i class="fas fa-check"></i> ADDED`;
+            btn.disabled = true;
+            btn.style.backgroundColor = "#e09a0d";
+            btn.style.cursor = "default";
+
+            // 3. Update the global data
+            totalItems += currentQty;
+            totalPrice += (currentQty * price);
+
+            // Save item details for the popup list
+            cartItems.push({
+                name: name,
+                price: price,
+                qty: currentQty
+            });
+
+            // 4. Update all UI components (Summary Card, Floating Button, and Popup)
+            updateSummary();
+            renderModalItems();
+        }
+
+        function updateSummary() {
+            // Sidebar Elements
+            const itemCountEl = document.getElementById("itemCount");
+            const totalPriceEl = document.getElementById("totalPrice");
+
+            // Floating Button Badge
+            const cartCountBadge = document.getElementById("cartCountBadge");
+
+            // Modal Footer Total
+            const modalTotalAmount = document.getElementById("modalTotalAmount");
+
+            // Update Text
+            itemCountEl.innerText = totalItems;
+            totalPriceEl.innerText = `₹${totalPrice}`;
+            if (cartCountBadge) cartCountBadge.innerText = totalItems;
+            if (modalTotalAmount) modalTotalAmount.innerText = `₹${totalPrice}`;
+
+            // Animation effect
+            totalPriceEl.style.transform = "scale(1.1)";
+            totalPriceEl.style.transition = "transform 0.2s";
+            setTimeout(() => { totalPriceEl.style.transform = "scale(1)"; }, 200);
+        }
+
+        // Function to build the list inside the popup
+        function renderModalItems() {
+            const list = document.getElementById("modalItemsList");
+            if (!list) return;
+
+            if (cartItems.length === 0) {
+                list.innerHTML = `<p class="empty-msg">Your cart is empty.</p>`;
+                return;
+            }
+
+            // Map through the items and create rows for the popup
+            list.innerHTML = cartItems.map(item => `
+        <div class="cart-item-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+            <div>
+                <strong style="color: #1a3a3a;">${item.name}</strong><br>
+                <small style="color: #666;">${item.qty} x ₹${item.price}</small>
+            </div>
+            <span style="font-weight: 700; color: #0d6e6e;">₹${item.qty * item.price}</span>
+        </div>
+    `).join('');
+        }
+
+        // Function to open/close the popup
+        function toggleCartModal() {
+            const modal = document.getElementById("cartModal");
+            if (modal) {
+                modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+            }
+        }
+        // Simple function to handle button clicks
+        function updateQty(btn, change) {
+            const container = btn.parentElement;
+            const qtySpan = container.querySelector('.qty-number');
+            let currentQty = parseInt(qtySpan.innerText);
+
+            currentQty += change;
+
+            if (currentQty < 0) currentQty = 0; // Prevent negative quantity
+
+            qtySpan.innerText = currentQty;
+
+            // Optional: Add logic here to update your sidebar total
+        }
+
+        // E. Run the logic to populate the grid
+        if (dailyMenu[today]) {
+            // This loop runs for EVERY item in today's menu list
+            const menuContent = dailyMenu[today].map(createMenuCard).join('');
+            grid.innerHTML = menuContent;
+        } else {
+            grid.innerHTML = `<p class="no-menu">No menu available for ${today} yet.</p>`;
+        }
+      async function initiateUPIPayment() {
+    if (totalPrice <= 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    try {
+        const response = await fetch('/place-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // <--- THIS SHOWS THE "PASSPORT" TO THE SERVER
+            body: JSON.stringify({
+                items: cartItems,
+                total: totalPrice
+            })
+        });
+
+        if (response.status === 201) {
+            // Success! Now open UPI
+            const upiId = "palaniyokesh8@oksbi";
+            const upiUrl = `upi://pay?pa=${upiId}&am=${totalPrice}&cu=INR`;
+            window.location.href = upiUrl;
+            
+            alert("Order Saved! You can now pay.");
+        } else if (response.status === 401) {
+            alert("Session expired. Please log in again.");
+            window.location.href = '/login-page';
+        }
+    } catch (err) {
+        alert("Error connecting to server.");
+    }
+    // Inside your fetch response (where status is 201)
+const result = await response.json();
+const token = result.token; // This comes from the Flask change we made
+
+// Show the Token to the student
+alert(`Order Placed! YOUR TOKEN: ${token}\nShow this at the counter after paying via UPI.`);
+
+// Optional: Redirect them to a "My Orders" page to see the pending status
+window.location.href = "/my-orders";
+}
+        function showWeeklyMenu(type) {
+            const drawer = document.getElementById("weeklyMenuDrawer");
+            const overlay = document.getElementById("drawerOverlay");
+            const content = document.getElementById("drawerContent");
+            const title = document.getElementById("drawerTitle");
+
+            title.innerText = `Full Week: ${type.toUpperCase()}`;
+            content.innerHTML = ""; // Clear old content
+
+            // Loop through each day in your dailyMenu object
+            for (let day in dailyMenu) {
+                let items = dailyMenu[day];
+
+                // Filter based on breakfast/lunch
+                let filtered = (type === 'breakfast')
+                    ? items.filter(i => i.isBreakfast)
+                    : items.filter(i => !i.isBreakfast);
+
+                if (filtered.length > 0) {
+                    let dayHTML = `<div class="day-section"><h4>${day}</h4>`;
+                    filtered.forEach(item => {
+                        dayHTML += `<div class="food-list-item">${item.name} - ₹${item.price}</div>`;
+                    });
+                    dayHTML += `</div>`;
+                    content.innerHTML += dayHTML;
+                }
+            }
+
+            // Show the drawer
+            drawer.classList.add("open");
+            overlay.style.display = "block";
+        }
+
+        function closeDrawer() {
+            document.getElementById("weeklyMenuDrawer").classList.remove("open");
+            document.getElementById("drawerOverlay").style.display = "none";
+        }
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const icon = document.querySelector('.hamburger i');
+
+            navLinks.classList.toggle('mobile-open');
+
+            if (navLinks.classList.contains('mobile-open')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+                // Optional: Disable background scrolling
+                document.body.style.overflow = 'hidden';
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+                // Re-enable scrolling
+                document.body.style.overflow = 'auto';
+            }
+        }
+        // --- Search Functionality ---
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.menu-card');
+
+            cards.forEach(card => {
+                // Find the food name inside the h4 tag of each card
+                const foodName = card.querySelector('h4').innerText.toLowerCase();
+
+                if (foodName.includes(searchTerm)) {
+                    card.style.display = "block"; // Show if it matches
+                } else {
+                    card.style.display = "none";  // Hide if it doesn't
+                }
+            });
+
+            // Optional: Handle "No results found"
+            const grid = document.getElementById("menuGrid");
+            const visibleCards = document.querySelectorAll('.menu-card[style="display: block;"]');
+
+            // If no cards are visible, you could show a message here
+        });
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('transitionOverlay');
+            // Fade out the overlay once page is ready
+            overlay.classList.add('loaded');
+        });
+
+        // Intercept all links for a smooth exit animation
+        document.querySelectorAll('a, .btn-menu').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const destination = this.href || this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+
+                // Only animate if it's an internal link (not a '#' or external)
+                if (destination && !destination.startsWith('#') && !this.target) {
+                    e.preventDefault();
+                    const overlay = document.getElementById('transitionOverlay');
+
+                    // Play exit animation
+                    overlay.classList.remove('loaded');
+                    overlay.classList.add('exit');
+
+                    // Wait for animation (500ms) then redirect
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500);
+                }
+            });
+        });
+        // Wrap your logic in an async function
+async function handlePayment() {
+    try {
+        const response = await fetch('/place-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Don't forget this!
+            body: JSON.stringify({
+                items: cartItems,
+                total: totalPrice
+            })
+        });
+
+        const result = await response.json();
+        console.log(result);
+        
+        // Hide loader after success
+        document.getElementById('transitionOverlay').classList.add('loaded');
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+// --- Account Management Logic ---
+
+// 1. Check Session & Update Nav
+async function checkUserSession() {
+    try {
+        // We use credentials: 'include' to pass the session cookie
+        const response = await fetch('/get-session', {
+            method: 'GET',
+            credentials: 'include' 
+        });
+        
+        const data = await response.json();
+
+        if (data.logged_in) {
+            document.getElementById('userAccountSection').style.display = 'inline-block';
+            document.getElementById('navLoginBtn').style.display = 'none';
+            document.getElementById('navUserName').innerText = data.user_name;
+            document.getElementById('navUserEmail').innerText = data.user_email;
+        } else {
+            document.getElementById('userAccountSection').style.display = 'none';
+            document.getElementById('navLoginBtn').style.display = 'block';
+        }
+    } catch (error) {
+        console.error("Session Error:", error);
+    }
+}
+
+// 2. Toggle Dropdown visibility
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// 3. Logout User
+async function logoutUser() {
+    try {
+        await fetch('/logout', { 
+            method: 'POST',
+            credentials: 'include'
+        });
+        window.location.href = "/login-page";
+    } catch (err) {
+        alert("Logout failed!");
+    }
+}
+
+// Close dropdown if clicking outside
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-account-container')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// INITIALIZE: Call this inside your existing window 'load' listener
+window.addEventListener('load', () => {
+    checkUserSession(); // Added this
+    // ... your existing overlay code ...
+});
+
+// Then call the function when the button is clicked
+document.querySelector('.pay-btn').onclick = handlePayment;
+
+
+    </script>
+    <div class="floating-cart" id="floatingCart" onclick="toggleCartModal()">
+        <i class="fas fa-shopping-basket"></i>
+        <span class="cart-count" id="cartCountBadge">0</span>
+    </div>
+
+    <div class="cart-modal-overlay" id="cartModal">
+        <div class="cart-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> Your Selection</h3>
+                <button class="modal-close-x" onclick="toggleCartModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" id="modalItemsList">
+                <p class="empty-msg">Your cart is empty.</p>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-total">
+                    <span>Total Amount:</span>
+                    <strong id="modalTotalAmount">₹0</strong>
+                </div>
+                <button class="upi-pay-btn" onclick="initiateUPIPayment()">
+                    <i class="fas fa-mobile-alt"></i> PAY VIA UPI
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

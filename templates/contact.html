@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/contact.css">
+    <title>Campus Bites | Contact us</title>
+</head>
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+    <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+</div>
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="CampusBites Logo" width="200px">
+        </div>
+         <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+       
+        <div class="nav-links" id="navLinks">
+    <a href="/home">Home</a>
+    <a href="/menu">Menu</a>
+    <a href="/about">About</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="/my-orders" class="orders-btn">My Orders</a>
+    
+    <div class="user-account-container" id="userAccountSection" style="display: none;">
+        <div class="user-profile-trigger" onclick="toggleUserDropdown()">
+            <i class="fa-solid fa-circle-user"></i>
+            <span id="navUserName">Loading...</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-header">
+                <p class="user-id-label">User ID</p>
+                <p id="navUserEmail" class="user-email-text">email@campus.com</p>
+            </div>
+            <hr>
+            <button class="logout-btn" onclick="logoutUser()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+    
+    <a href="/login-page" id="navLoginBtn">Login</a>
+</div>
+    </nav>
+
+<section class="contact-section">
+    <div class="contact-header">
+        <h1>Get <span>in</span> Touch</h1>
+        <p>Have a question or feedback? We're here to help you skip the queue!</p>
+    </div>
+
+ <div class="map-container" id="canteenMap">
+        <div class="map-frame">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15669.754751433842!2d76.7730203!3d10.9964587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!1m3!1m2!1s0x3ba861a5f9ff698f%3A0x9356be94cfa9483d!2sCiet%20Canteen!5e1!3m2!1sen!2sin!4v1712050000000!5m2!1sen!2sin&maptype=satellite" 
+                width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+
+        <div class="map-info">
+            <div class="pickup-details">
+                <h4><span class="pulse-icon"></span> CIET Main Canteen</h4>
+                <p>XQWF+H6J, Narasipuram, Tamil Nadu 641109</p>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=10.9964587,76.7730203&travelmode=walking" class="nav-btn" target="_blank">
+                Navigate to Counter
+            </a>
+        </div>
+    </div>
+
+    <div class="contact-grid">
+        <div class="contact-card visit-card">
+    <div class="icon">
+    <svg viewBox="0 0 24 24" width="50" height="50" xmlns="http://www.w3.org/2000/svg" class="map-explore-icon">
+        <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+    </svg>
+</div>
+    <h3>Visit Us</h3>
+    <div class="location-badge">Block A • Ground Floor</div>
+    <p>CIET Campus, Narasipuram<br>Near Main Auditorium</p>
+    
+    <div class="card-actions">
+        <a href="#canteenMap" class="btn-text btn-teal" onclick="smoothScrollToMap(event)">
+    Get Directions <span>→</span>
+</a>
+    </div>
+</div>
+
+        <div class="contact-card">
+           <div class="icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" class="whatsapp-icon">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
+</div>
+            <h3>Quick Support</h3>
+            <p>WhatsApp: +91 6369653859<br>Email: support@campusbites.com</p>
+          <a href="https://wa.me/916369653859" class="btn-text">
+    Chat Now <span>→</span>
+</a>
+        </div>
+
+        <div class="contact-card">
+           <div class="icon">
+    <svg viewBox="0 0 24 24" width="50" height="50" xmlns="http://www.w3.org/2000/svg" class="status-icon">
+        <path d="M20,4H4V6H20V4M21,14V12L20,7H4L3,12V14H4V20H14V14H18V20H20V14H21M12,18H6V14H12V18Z" />
+    </svg>
+</div>
+            <h3>Live Status</h3>
+            <div class="status-badge">● Open Now</div>
+            <p>Breakfast: 8:00 - 10:00 AM<br>Lunch: 11:00 - 1:00 PM</p>
+        </div>
+    </div>
+
+    
+</section>
+<script>
+  // 1. Handle Page Load (Hide Overlay + Update Status)
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('transitionOverlay');
+    if (overlay) {
+        overlay.classList.add('loaded');
+    }
+    updateCanteenStatus();
+});
+
+// 2. Smooth Scroll Logic (The "Get Directions" fix)
+function smoothScrollToMap(e) {
+    e.preventDefault(); // Stop the page from reloading
+    e.stopPropagation(); // Stop the click from reaching the Link Interceptor below
+    
+    const mapElement = document.querySelector('.map-container');
+    if (mapElement) {
+        mapElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+        
+        // Visual feedback
+        mapElement.style.transform = "scale(1.02)";
+        setTimeout(() => mapElement.style.transform = "scale(1)", 400);
+    }
+}
+
+// 3. Smart Link Interceptor (The "Infinite Loading" fix)
+document.querySelectorAll('a, .btn-menu').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const destination = this.getAttribute('href');
+        const currentUrl = window.location.href.split('#')[0];
+
+        // --- THE GATEKEEPER LOGIC ---
+        // Do NOT play animation if:
+        // - The button has an 'onclick' function (like your Directions button)
+        // - The link is just a '#' or starts with '#'
+        // - The link opens in a new tab (target="_blank")
+        if (this.onclick || !destination || destination.startsWith('#') || this.target === "_blank") {
+            return; 
+        }
+
+        // Only play exit animation for actual page changes (e.g., home.html)
+        e.preventDefault();
+        const overlay = document.getElementById('transitionOverlay');
+        if (overlay) {
+            overlay.classList.remove('loaded');
+            overlay.classList.add('exit');
+
+            setTimeout(() => {
+                window.location.href = this.href;
+            }, 500);
+        }
+    });
+});
+
+// 4. Live Status Logic (1 PM Rule)
+function updateCanteenStatus() {
+    const statusBadge = document.querySelector('.status-badge');
+    if (!statusBadge) return;
+    const hours = new Date().getHours();
+
+    if (hours < 13) {
+        statusBadge.innerHTML = "● Open Now";
+        statusBadge.style.color = "#2e7d32";
+        statusBadge.style.background = "#e8f5e9";
+    } else {
+        statusBadge.innerHTML = "● Closed";
+        statusBadge.style.color = "#c62828";
+        statusBadge.style.background = "#ffebee";
+    }
+}
+   function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        const icon = document.querySelector('.hamburger i');
+
+        // Toggles the bounce animation
+        navLinks.classList.toggle('mobile-open');
+
+        // Optional: Switches the bars icon to an 'X' icon
+        if (navLinks.classList.contains('mobile-open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+    // --- Account Management Logic ---
+
+// 1. Check Session & Update Nav
+async function checkUserSession() {
+    try {
+        // We use credentials: 'include' to pass the session cookie
+        const response = await fetch('/get-session', {
+            method: 'GET',
+            credentials: 'include' 
+        });
+        
+        const data = await response.json();
+
+        if (data.logged_in) {
+            document.getElementById('userAccountSection').style.display = 'inline-block';
+            document.getElementById('navLoginBtn').style.display = 'none';
+            document.getElementById('navUserName').innerText = data.user_name;
+            document.getElementById('navUserEmail').innerText = data.user_email;
+        } else {
+            document.getElementById('userAccountSection').style.display = 'none';
+            document.getElementById('navLoginBtn').style.display = 'block';
+        }
+    } catch (error) {
+        console.error("Session Error:", error);
+    }
+}
+
+// 2. Toggle Dropdown visibility
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// 3. Logout User
+async function logoutUser() {
+    try {
+        await fetch('/logout', { 
+            method: 'POST',
+            credentials: 'include'
+        });
+        window.location.href = "/login-page";
+    } catch (err) {
+        alert("Logout failed!");
+    }
+}
+
+// Close dropdown if clicking outside
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-account-container')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// INITIALIZE: Call this inside your existing window 'load' listener
+window.addEventListener('load', () => {
+    checkUserSession(); // Added this
+    // ... your existing overlay code ...
+});
+</script>
+
+</body>
+</html>

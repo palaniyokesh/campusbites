@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Bites | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+        <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="page-watermark">Login</div>
+
+    <div class="login-card">
+        <img src="/static/images/login.png" class="card-logo">
+        <p class="subtitle">Hungry? Let’s get you fed.login to <span>CampusBites.</span></p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="email" placeholder="Enter Email Address" required autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required autocomplete="new-password">
+            </div>
+
+            <div class="options-row">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember">
+                    Remember Me
+                </label>
+                <a href="#" class="forgot-pass">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+        <div class="signup-link">
+            Don't have an account? <a href="/signup-page">Create Account</a>
+        </div>
+
+        <div class="admin-link" style= "text-align: center; color:#888;margin-top: 15px; font-size: 0.8rem;">
+            Are you an administrator? <a href="/admin-login" style="color: #ff0000;  font-weight: 800; text-decoration: none;">Admin Access</a>
+        </div>
+    </div>
+    <script>
+        // 1. Handle Page Load (Fades out the spinner)
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('transitionOverlay');
+            if (overlay) {
+                overlay.classList.add('loaded');
+            }
+        });
+
+        // 2. Login Logic
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    // This saves the session cookie (the "Passport")
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.status === 200) {
+                        const overlay = document.getElementById('transitionOverlay');
+                        if (overlay) {
+                            overlay.classList.remove('loaded');
+                            overlay.classList.add('exit');
+                        }
+
+                        setTimeout(() => {
+                            window.location.href = "/home";
+                        }, 500);
+                    } else {
+                        alert(result.message || "Invalid credentials");
+                    }
+                } catch (error) {
+                    console.error("Connection Error:", error);
+                    alert("Cannot connect to server. Did you start app.py?");
+                }
+            });
+        }
+
+        // 3. Handle Regular Links for smooth transitions
+        document.querySelectorAll('a, .btn-menu').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const destination = this.href;
+
+                if (destination && !destination.includes('#') && !this.target) {
+                    e.preventDefault();
+                    const overlay = document.getElementById('transitionOverlay');
+                    if (overlay) {
+                        overlay.classList.remove('loaded');
+                        overlay.classList.add('exit');
+                    }
+
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500);
+                }
+            });
+        });
+
+        // 4. Clear Form on Page Load (Fixes the logout auto-fill issue)
+        window.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            if (loginForm) {
+                // Reset the whole form
+                loginForm.reset();
+
+                // Manually clear values with a 10ms delay to beat browser autocomplete
+                setTimeout(() => {
+                    if (emailInput) emailInput.value = "";
+                    if (passwordInput) passwordInput.value = "";
+                }, 10);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Bites | Admin Portal</title>
+ 
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+
+<body>
+
+   <div class="page-transition-overlay" id="transitionOverlay">
+    <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+</div>
+
+   <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+    <a href="#" class="active">Dashboard</a>
+    <a href="/analytics-page">Analytics</a>
+    <a href="/admin-reviews-page">Customer Reviews</a> 
+    <a href="/admin-login" class="logout-btn" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+    </nav>
+
+    <section class="admin-section">
+        <div class="admin-header">
+            <h1>Admin <span>Dashboard</span></h1>
+            <p style="color: var(--text-muted); font-weight: 500;">Manage live orders and kitchen queue</p>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <button onclick="exportToPDF()" class="btn-ready" style="background: #e74c3c; margin-bottom: 20px;">
+            <i class="fas fa-file-pdf"></i> Export PDF Report
+        </button>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-shopping-basket" style="color: var(--primary-teal); margin-bottom: 10px;"></i>
+                <h3>Total Orders</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock" style="color: var(--accent-gold); margin-bottom: 10px;"></i>
+                <h3>Pending</h3>
+                <p id="pendingCount" style="color: var(--accent-gold);">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-wallet" style="color: var(--success); margin-bottom: 10px;"></i>
+                <h3>Earnings Today</h3>
+                <p id="totalEarnings" style="color: var(--success);">₹0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-times-circle" style="color: #d32f2f; margin-bottom: 10px;"></i>
+                <h3>Orders Cancelled</h3>
+                <p id="cancelledCount" style="color: #d32f2f;">0</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        let currentOrders = []; // Global variable to store live data
+        // 1. BOUNCER: Security Check on Load
+        window.addEventListener('load', () => {
+            const isAdmin = localStorage.getItem('adminLoggedIn');
+            if (isAdmin !== 'true') {
+                window.location.href = "/admin-login";
+            } else {
+                const overlay = document.getElementById('transitionOverlay');
+                if (overlay) overlay.classList.add('loaded');
+                loadAdminOrders();
+            }
+        });
+
+       async function loadAdminOrders() {
+    try {
+        const response = await fetch('/admin/get-all-orders');
+        const orders = await response.json();
+        currentOrders = orders;
+        
+        const tableBody = document.getElementById('adminTableBody');
+
+        // --- MANUALLY BUILD TODAY'S DATE (YYYY-MM-DD) ---
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        
+        // This is exactly "2026-04-05" matching your Flask strftime
+        const todayStr = `${year}-${month}-${day}`; 
+
+        let pendingCount = 0;
+        let todayEarnings = 0;
+        let successOrdersToday = 0; 
+        let cancelledOrdersToday = 0; 
+
+        tableBody.innerHTML = orders.map(order => {
+            const amount = parseFloat(order.total_amount || 0);
+
+            // LOGIC CHECK: 
+            // 1. Compare the strings directly
+            const isToday = (order.date === todayStr);
+
+            if (isToday) {
+                if (order.status === "Cancelled") {
+                    cancelledOrdersToday++;
+                } else {
+                    // Counts 'Pending' and 'Ready' for the revenue/total
+                    successOrdersToday++; 
+                    todayEarnings += amount;
+                }
+            }
+
+            // This doesn't care about the date, which is why it was working for you
+            if (order.status === "Pending") pendingCount++;
+
+            // --- UI Rendering ---
+            const itemsStr = order.items.map(i => `
+                <div style="margin-bottom: 4px; font-size: 0.9rem;">
+                    <span style="color: var(--accent-gold); font-weight: 700;">${i.qty}x</span> ${i.name}
+                </div>`).join('');
+
+            let actionHtml = order.status === 'Pending'
+                ? `<button class="btn-ready" onclick="updateStatus('${order.token_id}', 'Ready')">Mark Ready</button>`
+                : `<i class="fas fa-${order.status === 'Ready' ? 'check-circle' : 'times-circle'}" 
+                  style="color: ${order.status === 'Ready' ? 'var(--success)' : '#c62828'}"></i>`;
+
+            return `
+            <tr>
+                <td style="font-weight:bold; color:var(--primary-teal); font-family:monospace;">${order.token_id}</td>
+                <td>
+                    <div style="font-weight:600;">${order.customer_name || 'Student'}</div>
+                    <div style="font-size:0.75rem; color:#888;">${order.time || ''}</div>
+                </td>
+                <td>${itemsStr}</td>
+                <td style="font-weight:700;">₹${amount}</td>
+                <td><span class="status-pill status-${order.status.toLowerCase()}">${order.status}</span></td>
+                <td style="text-align:center;">${actionHtml}</td>
+            </tr>`;
+        }).join('');
+
+        // --- UPDATE THE DASHBOARD ---
+        document.getElementById('totalCount').innerText = successOrdersToday;
+        document.getElementById('pendingCount').innerText = pendingCount;
+        document.getElementById('totalEarnings').innerText = "₹" + todayEarnings.toLocaleString('en-IN');
+        document.getElementById('cancelledCount').innerText = cancelledOrdersToday;
+
+    } catch (e) {
+        console.error("Critical Load Error:", e);
+    }
+}
+       async function updateStatus(tokenId, newStatus) {
+    // 1. Get the button that was clicked using event.target
+    const btn = event.target;
+    
+    // 2. Disable it immediately so the user can't click twice
+    if (btn && btn.tagName === 'BUTTON') {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+    }
+
+    try {
+        // 3. Wait for the fetch to actually complete
+        const response = await fetch('/admin/update-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token_id: tokenId, status: newStatus })
+        });
+
+        if (response.ok) {
+            // 4. Refresh the data immediately after a successful update
+            await loadAdminOrders();
+        } else {
+            console.error("Server error");
+            if (btn) btn.disabled = false; // Re-enable if it failed
+        }
+    } catch (e) {
+        console.error("Update Error:", e);
+        if (btn) btn.disabled = false;
+    }
+}
+        function adminLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('transitionOverlay').classList.remove('loaded');
+            setTimeout(() => { window.location.href = "/admin-login"; }, 400);
+        }
+
+        setInterval(loadAdminOrders, 10000); // Auto-refresh every 10s
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const today = new Date().toISOString().split('T')[0];
+
+            // --- BRAND COLORS (Mapped from your CSS) ---
+            const colors = {
+                primaryTeal: [13, 77, 77],   // #0d4d4d
+                accentGold: [202, 145, 38],  // #ca9126
+                bgCream: [248, 237, 211],    // #f8edd3
+                cardWhite: [251, 243, 223],  // #fbf3df
+                textMuted: [85, 85, 85],     // #555
+                success: [40, 199, 111]      // #28c76f
+            };
+            
+
+            // 1. BACKGROUND (Full Page Cream)
+            doc.setFillColor(...colors.bgCream);
+            doc.rect(0, 0, 210, 297, 'F');
+
+            // 2. HEADER BAR (Card White style with Teal Top Border)
+            doc.setFillColor(...colors.cardWhite);
+            doc.rect(0, 0, 210, 45, 'F');
+            doc.setFillColor(...colors.primaryTeal);
+            doc.rect(0, 0, 210, 4, 'F'); // Thin teal top border
+
+            // 3. TITLE & LOGO (Left Aligned)
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(...colors.primaryTeal);
+            doc.setFontSize(26);
+            doc.text("ADMIN", 15, 25);
+            doc.setTextColor(...colors.accentGold);
+            doc.text("DASHBOARD", 52, 25); // Matching your h1 span style
+
+            doc.setFontSize(10);
+            doc.setTextColor(...colors.textMuted);
+            doc.text("CAMPUS BITES | CIET CANTEEN MANAGEMENT SYSTEM", 15, 33);
+            doc.text(`Report Date: ${today}`, 15, 38);
+
+            // 4. STATS CARDS (Styled like your .stat-card)
+            const stats = [
+                { label: "TOTAL ORDERS", value: document.getElementById('totalCount').innerText, x: 15 },
+                { label: "PENDING", value: document.getElementById('pendingCount').innerText, x: 63 },
+                {label: "EARNINGS",value: document.getElementById('totalEarnings').innerText.replace('₹', 'Rs. '),x: 111
+},
+                { label: "CANCELLED", value: document.getElementById('cancelledCount').innerText, x: 159 }
+            ];
+
+            stats.forEach(s => {
+                // Card Background
+                doc.setFillColor(...colors.cardWhite);
+                doc.setDrawColor(13, 110, 110, 0.1); // Subtle teal border
+                doc.roundedRect(s.x, 50, 40, 25, 3, 3, 'FD');
+
+                // Label
+                doc.setFontSize(7);
+                doc.setTextColor(...colors.textMuted);
+                doc.text(s.label, s.x + 20, 58, { align: "center" });
+
+                // Value
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(...colors.primaryTeal);
+                doc.text(s.value, s.x + 20, 68, { align: "center" });
+            });
+
+            // 5. TABLE STYLING (Matches your table CSS)
+            const tableRows = currentOrders.map(order => [
+                order.token_id,
+                order.customer_name || "Student",
+                order.items.map(i => `${i.qty}x ${i.name}`).join(", "),
+                "Rs. " + (order.total_amount || 0),
+                order.status,
+                order.time
+            ]);
+
+            doc.autoTable({
+                startY: 85,
+                head: [['TOKEN', 'CUSTOMER', 'ITEMS', 'TOTAL', 'STATUS', 'TIME']],
+                body: tableRows,
+                theme: 'plain', // We will manually style it to match your CSS
+                styles: {
+                    font: "helvetica",
+                    fontSize: 9,
+                    cellPadding: 5,
+                    textColor: colors.textMuted,
+                    fillColor: colors.cardWhite // Matches your .table-container background
+                },
+                headStyles: {
+                    fillColor: [13, 110, 110, 0.05], // Matches your th background
+                    textColor: colors.primaryTeal,
+                    fontStyle: 'bold',
+                    halign: 'left'
+                },
+                columnStyles: {
+                    0: { textColor: colors.primaryTeal, fontStyle: 'bold' }, // Token column
+                    3: { fontStyle: 'bold' }, // Total amount
+                    4: { fontStyle: 'bold' }  // Status
+                },
+                didParseCell: function (data) {
+                    // UI/UX Trick: Color the Status text specifically
+                    if (data.section === 'body' && data.column.index === 4) {
+                        if (data.cell.raw === 'Ready') data.cell.styles.textColor = [46, 125, 50];
+                        if (data.cell.raw === 'Pending') data.cell.styles.textColor = [239, 108, 0];
+                        if (data.cell.raw === 'Cancelled') data.cell.styles.textColor = [198, 40, 40];
+                    }
+                }
+            });
+
+            // 6. FOOTER
+            doc.setFontSize(8);
+            doc.setTextColor(...colors.textMuted);
+            doc.text("End of Daily Report", 105, 285, { align: "center" });
+
+            doc.save(`CampusBites_Admin_Report_${today}.pdf`);
+        }
+        function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        const icon = document.querySelector('.hamburger i');
+
+        // Toggles the bounce animation
+        navLinks.classList.toggle('mobile-open');
+
+        // Optional: Switches the bars icon to an 'X' icon
+        if (navLinks.classList.contains('mobile-open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+   // 1. HANDLE PAGE ENTRY (Fade Out)
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('transitionOverlay');
+    if (overlay) overlay.classList.add('loaded');
+});
+
+// 2. HANDLE PAGE EXIT (Fade In on link click)
+document.querySelectorAll('.nav-links a:not(.logout-btn)').forEach(link => {
+    link.addEventListener('click', function (e) {
+        let destination = this.href;
+
+        if (destination && !destination.includes('#')) {
+            e.preventDefault();
+            const overlay = document.getElementById('transitionOverlay');
+            
+            overlay.classList.remove('loaded');
+            overlay.classList.add('exit');
+
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 500);
+        }
+    });
+});
+
+// 3. UPDATED LOGOUT WITH ANIMATION
+function adminLogout() {
+    const overlay = document.getElementById('transitionOverlay');
+    
+    // Play exit animation first
+    overlay.classList.remove('loaded');
+    overlay.classList.add('exit');
+
+    localStorage.removeItem('adminLoggedIn');
+    
+    // Redirect after animation
+    setTimeout(() => { 
+        window.location.href = "/admin-login"; 
+    }, 500);
+}
+
+async function enterAdminPortal() {
+    const codeInput = document.getElementById('accessCode').value;
+
+    const response = await fetch('/admin/verify-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeInput })
+    });
+
+    if (response.ok) {
+        // Success! Go to the dashboard
+        window.location.href = "/admin-dashboard";
+    } else {
+        alert("Incorrect Access Code!");
+    }
+}
+    </script>
+</body>
+
+</html>

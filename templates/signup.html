@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Bites | Create Account</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/static/css/login.css">
+
+</head>
+
+
+
+<body>
+
+   <div class="page-transition-overlay" id="transitionOverlay">
+
+    <div class="loader-content">
+
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+
+            <div class="loader-bar"></div>
+
+        </div>
+
+</div>
+
+
+
+    <div class="page-watermark">Signup</div>
+
+
+
+    <div class="login-card">
+
+        <img src="/static/images/login.png" class="card-logo">
+
+        <p class="subtitle">Join the community. Create your <span>CampusBites</span> account.</p>
+
+
+
+        <form id="signupForm">
+
+            <div class="input-group">
+
+                <i class="fa-regular fa-user"></i>
+
+                <input type="text" id="name" placeholder="Enter Full Name" required>
+
+            </div>
+
+            <div class="input-group">
+
+                <i class="fa-regular fa-envelope"></i>
+
+                <input type="email" id="email" placeholder="Enter Email Address" required>
+
+            </div>
+
+
+
+            <div class="input-group">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password" id="password" placeholder="Create Password" required>
+
+            </div>
+
+
+
+            <div class="input-group">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+
+            </div>
+
+
+
+            <button type="submit" class="btn-login">Create Account</button>
+
+        </form>
+
+
+
+        <div class="signup-link">
+
+            Already have an account? <a href="/login-page">Login here</a>
+
+        </div>
+
+    </div>
+
+
+
+        <script>
+
+            // 1. Handle Page Load Fade Out
+
+            window.addEventListener('load', () => {
+
+                document.getElementById('transitionOverlay').classList.add('loaded');
+
+            });
+
+
+
+            // 2. Handle Form Submission to Flask
+
+            document.getElementById('signupForm').addEventListener('submit', async function (e) {
+
+                e.preventDefault();
+
+
+
+                const name = document.getElementById('name').value; // 1. Grab the name value
+
+                const email = document.getElementById('email').value;
+
+                const password = document.getElementById('password').value;
+
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+
+
+                if (password !== confirmPassword) {
+
+                    alert("Passwords do not match!");
+
+                    return;
+
+                }
+
+
+
+                try {
+
+                    // Sending data to your Flask Backend
+
+                    const response = await fetch('/signup', {
+
+                        method: 'POST',
+
+                        headers: { 'Content-Type': 'application/json' },
+
+                        body: JSON.stringify({ name, email, password }) // Now sending name too!
+
+                    });
+
+
+
+                    const result = await response.json();
+
+
+
+                    if (response.status === 201) {
+
+                        // Success: Trigger transition animation and redirect to login
+
+                        const overlay = document.getElementById('transitionOverlay');
+
+                        overlay.classList.remove('loaded');
+
+                        overlay.classList.add('exit');
+
+
+
+                        setTimeout(() => {
+
+                            window.location.href = "/login-page";
+
+                        }, 500);
+
+                    } else {
+
+                        alert(result.message || "Signup failed!");
+
+                    }
+
+                } catch (error) {
+
+                    console.error("Error:", error);
+
+                    alert("Could not connect to the server. Is your Flask app running?");
+
+                }
+
+            });
+
+        </script>
+
+</body>
+
+
+
+</html> 

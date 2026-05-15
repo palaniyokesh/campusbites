@@ -1,0 +1,696 @@
+
+       * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body, html {
+            height: 100%;
+            overscroll-behavior-y: none;
+            overscroll-behavior-x: none;
+            cursor: url('https://img.icons8.com/ios-filled/32/fork.png'), auto;
+    
+    /* Ensure the background stays fixed relative to the viewport */
+    background-attachment: fixed;
+        }
+
+
+        /* --- UNIFIED NAVBAR --- */
+nav {
+    background-color: #fbf3df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px; /* Standardized Desktop Padding */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.21);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0d6e6e;
+    margin-left: 35px; /* Standardized spacing */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0; /* Start at 0 width */
+  height: 1.6px; /* Thickness of the line */
+  background-color: #0d6e6e;
+  transition: width 0.3s ease; /* This creates the "sliding" animation */
+}
+.nav-links a:hover::after {
+  width: 50%; /* Expands to exactly half the width */
+}
+
+/* Unified Active Underline */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px; 
+    left: 0;
+    width: 100%; 
+    height: 1.6px; 
+    background: #0d6e6e;
+    border-radius: 2px;
+}
+
+/* Hide hamburger by default on Desktop */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: #0d6e6e;
+    cursor: pointer;
+}
+        /* Hero Section Container */
+        .hero {
+            background: linear-gradient(#f8edd37f, rgba(0, 0, 0, 0.636)), 
+                        url('../images/aboutbg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 110vh;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .content {
+            max-width: 800px;
+        }
+        .container{
+            margin-top: 10px;
+             background: rgba(255, 255, 255, 0.05); /* Very subtle glass */
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.395);
+        padding: 20px 20px;
+        
+        border-radius: 15px;
+        z-index: 999;
+        }
+        /* Heading Style */
+        h1 {
+            color: #0d6e6e; /* Golden orange color */
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        /* Subtext / Lorem Ipsum */
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: #000000;
+            font-weight: 400;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            p { font-size: 1rem; }
+        }
+ /* --- MOBILE ONLY STYLES --- */
+@media (max-width: 768px) {
+    /* 1. Navbar & Hamburger */
+    .hamburger {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+    /* (Keep your hamburger and nav z-index as they are) */
+        /* 1. Navbar Layout */
+    nav {
+        flex-direction: row !important; /* Keep logo and hamburger on one line */
+        justify-content: space-between;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .nav-links {
+        /* FIX 1: Change display: none to visibility/opacity for animation */
+        display: flex !important; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fbf3df;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 9999 !important;
+
+        /* THE SLIDE BOUNCE SETUP */
+        opacity: 0;
+        pointer-events: none; /* Prevents clicking links while hidden */
+        transform: translateY(-20px); /* Start slightly higher */
+        
+        /* The cubic-bezier handles the "bouncy" snap back */
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* FIX 2: The "Open" state triggers the slide and bounce */
+    .nav-links.mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0); /* Slides down to its perfect spot */
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+        font-size: 18px;
+        text-decoration: none;
+        color: #0d6e6e;
+        font-weight: 600;
+        display: block;
+        position: relative;
+    }
+
+    /* Small centered active line for the "Menu" link */
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 25px;
+        height: 2px;
+        background-color: #0d6e6e;
+        border-radius: 2px;
+    }
+}}  
+    .mini-btn:hover {
+        border: 1px solid #f39c12;
+        background: #f39c12;
+        color: white;
+        box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    #rate-ui, #submit-btn {
+        transition: opacity 0.3s ease;
+    }
+    .social-login {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.social-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.3s;
+    border: 1px solid #eee;
+}
+
+.social-icon.fb { color: #3b5998; }
+.social-icon.gp { color: #ed3d78; }
+.social-icon.tw { color: #db4437; }
+
+.social-icon:hover {
+    transform: translateY(-3px);
+    background: #f9f9f9;
+}
+
+.footer-text { font-size: 15px; color: var(--text-grey); margin-bottom: 15px; font-weight: 700;}
+/* Full screen overlay */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fbf3df; 
+    z-index: 10000; /* Increased to stay above everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: visible;
+}
+
+.page-transition-overlay.loaded {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* BIGGER LOGO */
+.transition-logo {
+    width: 200px !important; /* Your requested size */
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
+}
+
+/* BIGGER LOADER BAR */
+.loader-content { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-bar {
+    width: 200px; /* Matched to logo width */
+    height: 6px;   /* Thicker bar */
+    background: rgba(13, 110, 110, 0.2); /* Faded primary teal */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ca9126; /* Accent Gold */
+    border-radius: 20px;
+    animation: loading-slide 1s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes loading-slide {
+    0% { left: -100%; }
+    50% { left: 0%; }
+    100% { left: 100%; }
+}
+/* 1. The Wrapper helps position the character relative to the box */
+.container-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* 2. Character Styling */
+.char-pizza {
+    position: absolute;
+    width: 180px;      /* Adjust size as needed */
+    left: -100px;      /* Moves it to the left so it overlaps the edge */
+    bottom: 300px;     /* Sits it slightly lower than the container */
+    z-index: 12;       /* Ensures it sits ON TOP of the glass container */
+    filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.3));
+    cursor: pointer;/* Allows clicks to pass through to links behind it */
+    transition: transform 0.5s ease;
+}
+
+
+
+/* 3. Responsive fix for Mobile */
+@media (max-width: 768px) {
+    .char-pizza {
+       display: none;    /* Move it to the top left corner instead */
+       
+    }
+    
+    .container {
+        margin-top: 40px; /* Space for character on top */
+    }
+}
+/* --- A. Updated The Wrapper (Crucial) --- */
+.container-wrapper {
+    position: relative;
+    display: block; /* Ensure width: 100% works */
+    width: 100%;
+    margin: 0 auto;
+    /* Optional: Make room for the tall stump */
+    padding-bottom: 20px; 
+}
+
+
+
+/* --- C. New Style for the Wood Stump --- */
+.log-pedestal {
+    position: absolute;
+    width: 200px;    /* IMPORTANT: Must be narrower than the char and aligned to its legs */
+    left: -100px;     /* IMPORTANT: Aligned so the legs sit on top of the rings */
+    bottom: -21px;   /* Sits lower than the character's feet to fit 'under' them */
+    z-index: 10;     /* Below the character */
+    opacity: 0.95;   /* Very subtle opacity to look less harsh against black */
+    filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.3));
+    pointer-events: none;
+}
+
+/* --- D. Optional: Fun Hover Effect --- */
+.container-wrapper:hover .char-pizza {
+    transform: translateY(-8px) rotate(-25deg); /* "Jumps" slightly off the log */
+}
+
+/* --- E. Responsive Mobile adjustments --- */
+@media (max-width: 768px) {
+    .log-pedestal {
+      display: none;
+    }
+}
+.mini-rate-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.314);
+        padding: 20px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        color: white;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* The "Fake" Input Box */
+    .input-wrapper {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        transition: 0.3s;
+        margin-bottom: 15px;
+    }
+
+    .input-wrapper:focus-within {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .review-textarea {
+        width: 100%;
+        height: 80px;
+        background: transparent; /* Transparent because wrapper has the color */
+        border: none;
+        color: white;
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
+        padding: 5px;
+    }
+    .review-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+    font-size: 0.85rem;
+    opacity: 1; /* Ensures the color is fully applied in Firefox */
+}
+
+    /* Internal Action Row */
+    .input-actions {
+        display: flex;
+        align-items: center;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 5px;
+    }
+
+    .media-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        opacity: 0.7;
+        transition: 0.3s;
+        color: white;
+    }
+
+    .media-btn:hover {
+        opacity: 1;
+        color: #f39c12;
+    }
+
+    /* Footer Row */
+    .rate-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stars {
+        font-size: 1.3rem;
+        display: flex;
+        gap: 4px;
+    }
+    .star:hover, .star.active {
+        color: #f39c12;
+        transform: scale(1.2);
+        text-shadow: 0 0 10px rgba(243, 156, 18, 0.6);
+    }
+  .mini-btn {
+        background: rgba(255, 255, 255, 0.08); /* Subtle white base */
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3); /* Default border starts subtle */
+        color: #ffffff;
+        padding: 9px 22px; /* Adjusted padding for better balance */
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden; /* Necessary for the shimmer effect */
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* --- The Shimmer Overlay --- */
+    .mini-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.5), /* The "light" part of the shimmer */
+            transparent
+        );
+        transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* --- Gold Accent Hover State --- */
+    .mini-btn:hover {
+        /* Changes border to gold */
+        border-color: #f39c12; 
+        
+        /* Adds a very subtle gold tint to the background */
+        background: rgba(243, 156, 18, 0.15); 
+        
+        /* Text stays white but adds a matching gold shadow for extra pop */
+        color: #ffffff;
+        text-shadow: 0 0 8px rgba(243, 156, 18, 0.8);
+        
+        /* Adds the gold glow around the button */
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        
+        /* Optional subtle lift */
+        transform: translateY(-2px);
+    }
+
+    /* --- Trigger Shimmer on Hover --- */
+    .mini-btn:hover::after {
+        left: 100%; /* Moves the shimmer across the button */
+    }
+
+    .mini-btn:active {
+        transform: translateY(1px); /* Press down effect */
+        box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+    }
+    /* Existing Star Logic Color */
+    .star { color: rgba(255, 255, 255, 0.2); transition: 0.2s; }
+    .star.active { color: #f39c12; }
+
+    /* Placeholder color as requested previously */
+.review-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Media Preview Styling */
+.preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preview-item {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-item img, .preview-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-media {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Account Nav Styling */
+.user-account-container {
+    position: relative;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #333;
+    font-weight: 600;
+}
+
+.user-profile-trigger i {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.user-dropdown.show { display: block; }
+
+.dropdown-header { margin-bottom: 10px; }
+
+.user-id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+}
+
+.user-email-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Montserrat';
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: #e60000; }
+
+/* --- MOBILE SPECIFIC FIXES --- */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers everything in the mobile menu */
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .user-account-container {
+        margin: 15px 0; /* Adds spacing between links and the profile */
+        width: 90%; /* Gives it a better touch target width */
+        display: flex;
+        justify-content: center;
+    }
+
+    .user-profile-trigger {
+        width: 100%; /* Makes the button look balanced */
+        justify-content: center;
+        padding: 12px 20px;
+        background: #fff; /* Contrast for mobile menu */
+        border: 1px solid #ff4d4d;
+    }
+
+    .user-dropdown {
+        position: relative; /* Changes from absolute so it pushes content down */
+        top: 10px;
+        right: 0;
+        width: 100%;
+        box-shadow: none; /* Cleaner look on mobile */
+        border: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    /* Prevent the dropdown from overlapping other nav links */
+    .user-dropdown.show {
+        display: block;
+        margin-bottom: 20px;
+    }
+}
