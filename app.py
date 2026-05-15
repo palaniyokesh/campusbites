@@ -13,7 +13,7 @@ from bson.objectid import ObjectId
 # 2. THE SETUP
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
-app.secret_key = "campus_bites_secret_key_123" 
+app.secret_key = os.environ.get("SECRET_KEY", "campus_bites_secret_key_123") 
 
 # --- Review File Upload Config ---
 UPLOAD_FOLDER = os.path.join('static', 'uploads', 'reviews')
@@ -28,14 +28,15 @@ def allowed_file(filename):
 # --- Security & Database ---
 bcrypt = Bcrypt(app) 
 
-# CORS Configuration
-CORS(app, supports_credentials=True, origins=[
-    "http://127.0.0.1:5500", 
-    "http://localhost:5500", 
-    "http://10.230.167.148:5500"
-])
-# --- Security & Database ---
-bcrypt = Bcrypt(app) 
+# CORS Configuration (Adapts automatically if running on Render)
+if os.environ.get("RENDER"):
+    CORS(app, supports_credentials=True, origins=["*"])
+else:
+    CORS(app, supports_credentials=True, origins=[
+        "http://127.0.0.1:5500", 
+        "http://localhost:5500", 
+        "http://10.230.167.148:5500"
+    ])
 
 # Cookie settings for cross-origin sessions
 app.config.update(
@@ -44,7 +45,8 @@ app.config.update(
     SESSION_COOKIE_SECURE=False, 
 )
 
-app.config["MONGO_URI"] = "mongodb://localhost:27017/CampusBitesDB"
+# Production Safe Database Config
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI", "mongodb://localhost:27017/CampusBitesDB")
 mongo = PyMongo(app)
 
 # 3. THE ROUTES
@@ -69,11 +71,11 @@ def about():
 def contact():
     return render_template('contact.html')
 
-@app.route('/login-page') # Renamed to avoid conflict with login API
+@app.route('/login-page') 
 def login_page():
     return render_template('login.html')
 
-@app.route('/signup-page') # Renamed to avoid conflict with signup API
+@app.route('/signup-page') 
 def signup_page():
     return render_template('signup.html')
 
@@ -214,7 +216,6 @@ def get_all_orders():
 
 @app.route('/admin/get-reviews', methods=['GET'])
 def get_reviews():
-    # Merged logic: Fetch all reviews and clean paths for web
     reviews = list(mongo.db.reviews.find().sort("created_at", -1))
     for rev in reviews:
         rev['_id'] = str(rev['_id'])
@@ -241,7 +242,6 @@ def cancel_order():
     data = request.json
     token_id = data.get('token_id')
     
-    # Check if the order belongs to this user before allowing cancellation
     order = mongo.db.orders.find_one({
         "token_id": token_id, 
         "user_email": session['user_email']
@@ -253,7 +253,6 @@ def cancel_order():
     if order['status'] != "Pending":
         return jsonify({"message": "Only pending orders can be cancelled"}), 400
 
-    # Update the status to Cancelled
     result = mongo.db.orders.update_one(
         {"token_id": token_id}, 
         {"$set": {"status": "Cancelled"}}
@@ -263,7 +262,7 @@ def cancel_order():
         return jsonify({"message": f"Order {token_id} has been cancelled."}), 200
     
     return jsonify({"message": "Update failed"}), 500
-# --- AUTHENTICATION ---
+
 @app.route('/get-session', methods=['GET'])
 def get_session():
     if 'user_name' in session:
@@ -296,46 +295,36 @@ def get_daily_analytics():
     }
 
     todays_expected_items = weekly_menu.get(current_day_name, [])
-
     query = {
         "date": today_str,
         "status": {"$in": ["Pending", "Ready", "Completed"]} 
     }
     today_orders = list(mongo.db.orders.find(query))
 
-    # --- START OF CALCULATION ---
     item_counts = {}
     total_revenue = 0
     total_items_sold = 0 
 
     for order in today_orders:
         total_revenue += float(order.get('total_amount', 0))
-        
         for item in order.get('items', []):
-            # Check if it's a dictionary {"name": "...", "quantity": ...}
             if isinstance(item, dict):
                 name = item.get('name')
                 qty = int(item.get('qty', 1))
-            # Otherwise, treat it as a simple string
             else:
                 name = str(item)
                 qty = 1
-            
             if name:
                 item_counts[name] = item_counts.get(name, 0) + qty
                 total_items_sold += qty
 
-    # --- DEFINE TRENDS (The missing part) ---
     if item_counts:
-        # Finds the key (item name) with the highest value (quantity)
         most_sold = max(item_counts, key=item_counts.get)
-        # List items on today's menu that have 0 sales
         unsold_items = [item for item in todays_expected_items if item not in item_counts]
     else:
         most_sold = "No sales yet"
         unsold_items = todays_expected_items
 
-    # --- THE RETURN ---
     return jsonify({
         "date": today_str,
         "day": current_day_name,
@@ -349,5 +338,6 @@ def get_daily_analytics():
     }), 200
 
 if __name__ == '__main__':
-    # Removing host='0.0.0.0' forces it to use 127.0.0.1 (Localhost)
-    app.run(port=5000, debug=True)
+    # Keeps local dynamic ports running smoothly if ran locally
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
