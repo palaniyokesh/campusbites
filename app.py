@@ -46,9 +46,12 @@ app.config.update(
 )
 
 # Production Safe Database Config
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI", "mongodb://127.0.0.1:5000/CampusBitesDB")
-mongo = PyMongo(app)
+app.config["MONGO_URI"] = os.environ.get(
+    "MONGO_URI", 
+    "mongodb://localhost:27017/CampusBitesDB"
+)
 
+mongo = PyMongo(app)
 # 3. THE ROUTES
 
 @app.route('/')
