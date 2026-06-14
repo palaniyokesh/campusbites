@@ -32,6 +32,7 @@
             <i class="fas fa-bars"></i>
         </div>
         <div class="nav-links" id="navLinks">
+    <a href="/admin-menu">manage menu</a>
     <a href="#" class="active">Dashboard</a>
     <a href="/analytics-page">Analytics</a>
     <a href="/admin-reviews-page">Customer Reviews</a> 
@@ -110,42 +111,37 @@
     try {
         const response = await fetch('/admin/get-all-orders');
         const orders = await response.json();
-        currentOrders = orders;
         
-        const tableBody = document.getElementById('adminTableBody');
-
         // --- MANUALLY BUILD TODAY'S DATE (YYYY-MM-DD) ---
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
-        
-        // This is exactly "2026-04-05" matching your Flask strftime
         const todayStr = `${year}-${month}-${day}`; 
+
+        // CRITICAL FIX: Filter out past orders so they disappear from the dashboard daily
+        const todayOrders = orders.filter(order => order.date === todayStr);
+        currentOrders = todayOrders; // Sync with PDF export
+        
+        const tableBody = document.getElementById('adminTableBody');
 
         let pendingCount = 0;
         let todayEarnings = 0;
         let successOrdersToday = 0; 
         let cancelledOrdersToday = 0; 
 
-        tableBody.innerHTML = orders.map(order => {
+        tableBody.innerHTML = todayOrders.map(order => {
             const amount = parseFloat(order.total_amount || 0);
 
-            // LOGIC CHECK: 
-            // 1. Compare the strings directly
-            const isToday = (order.date === todayStr);
-
-            if (isToday) {
-                if (order.status === "Cancelled") {
-                    cancelledOrdersToday++;
-                } else {
-                    // Counts 'Pending' and 'Ready' for the revenue/total
-                    successOrdersToday++; 
-                    todayEarnings += amount;
-                }
+            if (order.status === "Cancelled") {
+                cancelledOrdersToday++;
+            } else {
+                // Counts 'Pending' and 'Ready' for the revenue/total
+                successOrdersToday++; 
+                todayEarnings += amount;
             }
 
-            // This doesn't care about the date, which is why it was working for you
+            // Count pending orders for today only
             if (order.status === "Pending") pendingCount++;
 
             // --- UI Rendering ---
@@ -173,7 +169,7 @@
             </tr>`;
         }).join('');
 
-        // --- UPDATE THE DASHBOARD ---
+        // --- UPDATE THE DASHBOARD METRICS ---
         document.getElementById('totalCount').innerText = successOrdersToday;
         document.getElementById('pendingCount').innerText = pendingCount;
         document.getElementById('totalEarnings').innerText = "₹" + todayEarnings.toLocaleString('en-IN');
@@ -183,18 +179,17 @@
         console.error("Critical Load Error:", e);
     }
 }
-       async function updateStatus(tokenId, newStatus) {
-    // 1. Get the button that was clicked using event.target
-    const btn = event.target;
+
+async function updateStatus(tokenId, newStatus) {
+    // Cross-browser safety patch for fetching the clicked button instance
+    const btn = window.event ? window.event.target : null;
     
-    // 2. Disable it immediately so the user can't click twice
     if (btn && btn.tagName === 'BUTTON') {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     }
 
     try {
-        // 3. Wait for the fetch to actually complete
         const response = await fetch('/admin/update-status', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -202,11 +197,10 @@
         });
 
         if (response.ok) {
-            // 4. Refresh the data immediately after a successful update
             await loadAdminOrders();
         } else {
             console.error("Server error");
-            if (btn) btn.disabled = false; // Re-enable if it failed
+            if (btn) btn.disabled = false; 
         }
     } catch (e) {
         console.error("Update Error:", e);

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBites Admin | Menu & Stock Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/adminmenu.css">
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="transitionOverlay">
+        <div class="loader-content">
+            <img src="/static/images/logo.png" alt="CampusBites" style="width:250px;">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+    <nav>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo" width="200px">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="/admin-menu" class="active">manage menu</a>
+            <a href="/admin-dashboard">Dashboard</a>
+            <a href="/analytics-page">Analytics</a>
+            <a href="/admin-reviews-page">Customer Reviews</a>
+            <a href="/admin-login" class="logout-btn" onclick="adminLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div id="menu-panel" class="hub-panel">
+        <div class="layout-grid">
+            <div class="management-panel">
+                <div class="day-tabs"
+                    style="display: flex; gap: 70px; padding: 15px 0px; overflow-x:auto; margin-bottom:20px;">
+                    <button class="nav-link active" style="padding:8px 16px"
+                        onclick="switchDay('Monday', this)">Mon</button>
+                    <button class="nav-link" style="padding:8px 16px" onclick="switchDay('Tuesday', this)">Tue</button>
+                    <button class="nav-link" style="padding:8px 16px"
+                        onclick="switchDay('Wednesday', this)">Wed</button>
+                    <button class="nav-link" style="padding:8px 16px" onclick="switchDay('Thursday', this)">Thu</button>
+                    <button class="nav-link" style="padding:8px 16px" onclick="switchDay('Friday', this)">Fri</button>
+                    <button class="nav-link" style="padding:8px 16px" onclick="switchDay('Saturday', this)">Sat</button>
+                    <button class="nav-link" style="padding:8px 16px" onclick="switchDay('Sunday', this)">Sun</button>
+                </div>
+                <table class="dishes-table">
+                    <thead>
+                        <tr>
+                            <th>Dish Profile</th>
+                            <th>Price Tag</th>
+                            <th style="text-align: center;">Live Status</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminMenuTableBody">
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding: 20px; opacity: 0.6;">Loading menu layout
+                                asset structures...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-card">
+                <h2>Add Menu Variant</h2>
+                <form id="newDishForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Target Weekday</label>
+                        <select id="formTargetDay" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Dish Name</label><input type="text" placeholder="enter dish name" id="formDishName" required></div>
+                    <div class="form-group"><label>Price (₹)</label><input type="number" placeholder="enter price" id="formDishPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Dish Image</label>
+                        <label class="file-upload-wrapper" for="formDishImg">
+                            <i class="fas fa-image"></i>
+                            <span id="file-name">Click to select image</span>
+                            <input type="file" id="formDishImg" accept="image/*" required>
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="formIsVeg" checked> Veg</label>
+                        <label><input type="checkbox" id="formIsBreakfast"> Breakfast</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Save item to menu</button>
+                    <div class="form-status-box" id="formStatus">
+                        <small>
+                            <i class="fas fa-info-circle"></i>
+                            New dish will be added to the <strong><span id="targetDayLabel">Loading...</span></strong>
+                            queue.
+                        </small>
+                    </div>
+                    <div class="prep-guidelines">
+                        <h4><i class="fas fa-lightbulb"></i> Kitchen Tip</h4>
+                        <p>Keep stock toggles current and verify all menu data to reduce order errors and maintain a
+                            seamless student experience.</p>
+                    </div>
+                    <div class="form-footer-tips">
+                        <p><strong>Pro Tip:</strong> Ensure your dish image is in 16:9 ratio for the best view on the
+                            student app.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSelectedDay = "Monday";
+        let completeMenuBuffer = {};
+
+        async function fetchMenuState() {
+            try {
+                const response = await fetch(`/api/get-menu?cbust=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("Database dynamic sync error structural signature exception");
+                completeMenuBuffer = await response.json();
+                renderSelectedDayMenu();
+            } catch (err) {
+                console.error("Menu parse validation exception pipeline failure:", err);
+            }
+        }
+
+        function switchDay(targetDay, element) {
+            if (!element) return;
+            currentSelectedDay = targetDay;
+            element.parentElement.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            renderSelectedDayMenu();
+        }
+
+        function renderSelectedDayMenu() {
+            const container = document.getElementById("adminMenuTableBody");
+            if (!container) return;
+
+            const structuralItems = completeMenuBuffer[currentSelectedDay] || [];
+            if (structuralItems.length === 0) {
+                container.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px; opacity: 0.6;">No menu definitions parsed for this day.</td></tr>`;
+                return;
+            }
+
+            container.innerHTML = structuralItems.map(dish => {
+                const isAvailable = dish.available !== false;
+                const statusBit = isAvailable ? 1 : 0;
+
+                return `
+                <tr>
+                    <td>
+                        <strong>${dish.name}</strong><br>
+                        <small style="opacity:0.5;">${dish.isBreakfast ? 'Breakfast' : 'Meals/Lunch'}</small>
+                    </td>
+                    <td style="color:var(--accent-gold); font-weight:700;">₹${dish.price}</td>
+                    <td style="text-align: center;">
+                        <button class="status-toggle-btn ${isAvailable ? 'available' : 'unavailable'}" 
+                                onclick="toggleLiveDishAvailability('${dish.name.replace(/'/g, "\\'")}', ${statusBit})">
+                            ${isAvailable ? 'Available' : 'Unavailable'}
+                        </button>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="status-toggle-btn action-step" 
+                                style="background: rgba(255, 77, 77, 0.15); font-size:14px; border: 1px solid rgba(255, 77, 77, 0.4); color: #ff6666;"
+                                onmouseover="this.style.background='rgba(255, 77, 77, 0.3)'"
+                                onmouseout="this.style.background='rgba(255, 77, 77, 0.15)'"
+                                onclick="deleteFoodItem('${currentSelectedDay}', '${dish.name.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-trash"></i> <span>Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+        }
+
+        async function deleteFoodItem(day, foodName) {
+            if (window.event) window.event.preventDefault();
+            if (!confirm(`Are you sure you want to permanently delete "${foodName}" from ${day}'s menu?`)) return;
+
+            try {
+                const response = await fetch('/api/admin/delete-item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ day: day, name: foodName })
+                });
+
+                if (response.ok) {
+                    await fetchMenuState();
+                } else {
+                    const result = await response.json();
+                    alert("Deletion error: " + (result.error || "Failed execution query parameters."));
+                }
+            } catch (err) {
+                console.error("Delete structural operation crash telemetry error:", err);
+            }
+        }
+
+        async function toggleLiveDishAvailability(dishName, statusBit) {
+            if (window.event) window.event.preventDefault();
+            const currentStatusIsAvailable = statusBit === 1;
+
+            try {
+                const response = await fetch('/api/admin/toggle-availability', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        day: currentSelectedDay,
+                        name: dishName,
+                        available: !currentStatusIsAvailable
+                    })
+                });
+                if (response.ok) {
+                    await fetchMenuState();
+                } else {
+                    alert("Failed to transition availability target sequence.");
+                }
+            } catch (err) {
+                console.error("Stock toggle interception runtime crash:", err);
+            }
+        }
+
+        /* UPDATED: Uses FormData configuration to carry physical file buffers over to backend */
+        async function submitNewDish(event) {
+            if (event) event.preventDefault();
+
+            const fileInput = document.getElementById("formDishImg");
+            if (fileInput.files.length === 0) {
+                alert("Please upload an image file asset.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("day", document.getElementById("formTargetDay").value);
+            formData.append("name", document.getElementById("formDishName").value);
+            formData.append("price", parseInt(document.getElementById("formDishPrice").value) || 0);
+            formData.append("img", fileInput.files[0]); // Raw file uploaded binary metadata object
+            formData.append("isVeg", document.getElementById("formIsVeg").checked);
+            formData.append("isBreakfast", document.getElementById("formIsBreakfast").checked);
+
+            try {
+                // Note: Content-Type header is left completely empty intentionally; 
+                // the browser sets it automatically with the correct multipart boundary data tracking string.
+                const response = await fetch('/api/admin/add-dish', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("Dish created and asset uploaded successfully!");
+                    document.getElementById("formDishName").value = "";
+                    document.getElementById("formDishPrice").value = "";
+                    fileInput.value = ""; // Resets chosen image file asset buffer completely
+                    document.getElementById("formIsVeg").checked = true;
+                    document.getElementById("formIsBreakfast").checked = false;
+
+                    await fetchMenuState();
+                } else {
+                    alert("Server denied generations structural handling routing parameters.");
+                }
+            } catch (err) {
+                console.error("Dish database upload process structure fault:", err);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            fetchMenuState();
+            const form = document.getElementById('newDishForm');
+            if (form) form.addEventListener('submit', submitNewDish);
+        });
+
+        document.getElementById('formDishImg').addEventListener('change', function (e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : "Click to select image";
+            document.getElementById('file-name').textContent = fileName;
+        });
+        // Function to update the UI with today's day
+        function setInitialDay() {
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const today = days[new Date().getDay()]; // Gets current day name (e.g., "Sunday")
+
+            // 1. Update the Status Box text
+            const label = document.getElementById("targetDayLabel");
+            if (label) label.textContent = today;
+
+            // 2. Sync the Dropdown Select menu
+            const select = document.getElementById("formTargetDay");
+            if (select) select.value = today;
+
+            // 3. Update the global variable so the rest of your app knows today's day
+            currentSelectedDay = today;
+
+            // 4. Trigger the UI tab styling (optional, keeps buttons in sync)
+            const buttons = document.querySelectorAll('.day-tabs .nav-link');
+            buttons.forEach(btn => {
+                if (btn.textContent.trim().toLowerCase() === today.substring(0, 3).toLowerCase()) {
+                    switchDay(today, btn);
+                }
+            });
+        }
+
+        // Call this inside your window load event
+        window.addEventListener('load', () => {
+            setInitialDay(); // Set the day on startup
+            fetchMenuState();
+
+            const form = document.getElementById('newDishForm');
+            if (form) form.addEventListener('submit', submitNewDish);
+        });
+
+        document.getElementById('formTargetDay').addEventListener('change', function (e) {
+            const newDay = e.target.value;
+            const label = document.getElementById("targetDayLabel");
+            if (label) label.textContent = newDay;
+        });
+
+        // 1. HANDLE PAGE ENTRY (Fade Out)
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('transitionOverlay');
+            if (overlay) overlay.classList.add('loaded');
+        });
+
+        // 2. HANDLE PAGE EXIT (Fade In on link click)
+        document.querySelectorAll('.nav-links a:not(.logout-btn)').forEach(link => {
+            link.addEventListener('click', function (e) {
+                let destination = this.href;
+
+                if (destination && !destination.includes('#')) {
+                    e.preventDefault();
+                    const overlay = document.getElementById('transitionOverlay');
+
+                    overlay.classList.remove('loaded');
+                    overlay.classList.add('exit');
+
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500);
+                }
+            });
+        });
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const icon = document.querySelector('.hamburger i');
+
+            // Toggles the bounce animation
+            navLinks.classList.toggle('mobile-open');
+
+            // Optional: Switches the bars icon to an 'X' icon
+            if (navLinks.classList.contains('mobile-open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+    </script>
+</body>
+
+</html>
